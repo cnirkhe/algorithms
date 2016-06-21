@@ -12,6 +12,17 @@
 \makeatother
 
 \usepackage{enumerate}
+\usepackage{rotating}
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.10}
+\usetikzlibrary{shapes.geometric,arrows,fit,matrix,positioning}
+\tikzset
+{
+    treenode/.style = {circle, draw=black, align=center, minimum size=1.5cm},
+    subtree/.style  = {isosceles triangle, draw=black, align=center, minimum height=0.5cm, minimum width=1cm, shape border rotate=90, anchor=north}
+}
 
 
 \makeatletter
@@ -160,11 +171,11 @@
 
 \noindent A word of warning, however. I go into a lot of detail about the mathematics (as it interests me). I've tried to make it as accessible as possible by adding definitions for mathematical concepts as well as the intuition behind some of these definitions. However, if you are lost, Wikipedia is a good source for these definitions. \\
 
-\noindent I hope you enjoy this course as much as I did and feel free to ask me or any of the TAs questions. If you spot errors in these notes please let me know right away as I guarantee you that there will be plenty. I had a great time writing these notes and as I wrote them, I realized there was so much I hadn't understood the first and second times looking at this course. Please also take your own notes, but hopefully these will help you through this course. \\
+\noindent About the structure of the course. When these notes were written, the course was 40\% homework, 20\% midterm, 40\% final. That meant over the 7-8 sets, each problem on a set was worth about 1\% of your grade. This is not something worth losing sleep over! Its far more important to get a deep conceptual understanding of the material. Most importantly, this was noticeable in the two exams. The exams will test you on slightly different things than the sets. While each set will generally introduce 1-2 new algorithm topics and test you on them, the exams will test you on all the topics till that date and in particular will test you on your ability to look at a problem and quickly figure out what type of algorithm it is looking for. More often that not, students spend too long on a problem on the exam trying to find an algorithm of the wrong type. \\
 
-\noindent Lastly, a word about the structure of the course. When these notes were written, the course was 40\% homework, 20\% midterm, 40\% final. That meant over the 7-8 sets, each problem on a set was worth about 1\% of your grade. This is not something worth losing sleep over! Its far more important to get a deep conceptual understanding of the material. Most importantly, this was noticeable in the two exams. The exams will test you on slightly different things than the sets. While each set will generally introduce 1-2 new algorithm topics and test you on them, the exams will test you on all the topics till that date and in particular will test you on your ability to look at a problem and quickly figure out what type of algorithm it is looking for. More often that not, students spend too long on a problem on the exam trying to find an algorithm of the wrong type. \\
+\noindent I hope you enjoy this course as much as I did and feel free to ask me any questions. If you spot errors in these notes please let me know right away as I guarantee you that there will be plenty. I had a great time writing these notes and as I wrote them, I realized there was so much I hadn't understood the first and second times looking at this course! \\
 
-\noindent --Chinmay
+\noindent --Chinmay Nirkhe, \href{mailto:cnirkhe@gmail.com}{cnirkhe@gmail.com}
 
 
 \newpage
@@ -230,7 +241,7 @@ The following is an example solution. I've riddled it with footnotes explaining 
 Given an array of integers $x_1, \ldots, x_n$, find the \emph{longest increasing subsequence} i.e. the longest sequence of indices $i_1 < i_2 < \cdots < i_k$ such that $x_{i_1} \leq x_{i_2} \leq \cdots \leq x_{i_k}$. Design an algorithm that runs in $O(n^2)$.
 \end{exer}
 
-\noindent \textbf{Algorithm Description.} This is a dynamic programming algorithm.\footnote{A sentence like this is a great way to start. It immediately tells the reader what type of algorithm to expect and can help you get some easy partial credit.} We will construct tables $\ell$ and $p$ where $\ell[j]$ will is the length of the longest increasing subsequence that ends with $x_j$ and $p[j]$ is the index of the penultimate element in the longest subsequence.\footnote{We've told the reader all the initializations we want to make that aren't computationally trivial. Furthermore, we've explained what the ideal values of the tables we want to propagate are. This way when it comes to showing the correctness, we only have to assert that their tables are filled correctly.} 
+\begin{alg}[Longest Increasing Subsequence] This is a dynamic programming algorithm.\footnote{A sentence like this is a great way to start. It immediately tells the reader what type of algorithm to expect and can help you get some easy partial credit.} We will construct tables $\ell$ and $p$ where $\ell[j]$ will is the length of the longest increasing subsequence that ends with $x_j$ and $p[j]$ is the index of the penultimate element in the longest subsequence.\footnote{We've told the reader all the initializations we want to make that aren't computationally trivial. Furthermore, we've explained what the ideal values of the tables we want to propagate are. This way when it comes to showing the correctness, we only have to assert that their tables are filled correctly.} 
 
 \begin{enumerate}
 \item For $j = 1$ to $n$:\footnote{Its perfectly reasonable to use bullet points or numbers lists to organize your thinking. Just make sure you know that the result shouldn't be code.}
@@ -241,15 +252,13 @@ Given an array of integers $x_1, \ldots, x_n$, find the \emph{longest increasing
 \item Let $j$ be the $\arg \max$ of $\ell$. Follow $p$ backwards to construct the subsequence. That is, return the reverse of the sequence $j, p[j], p[p[j]], \ldots$ until some term has $p[j] = \nil$.\footnote{Resist the urge to write a while loop here. As stated is perfectly clear.}
 \end{enumerate}
 
-\noindent \textbf{Proof of Correctness.} First, we'll argue that the two arrays are filled correctly. Its trivial to see that the case of $j = 1$ is filled correctly. By induction on $k$, when $\ell[j]$ is updated, there is some increasing subsequence which ends at $x_j$ and has length $\ell[j]$. This sequence is precisely the longest subsequence ending at $x_k$ followed by $x_j$. The appropriate definition for $p[j]$ is immediate.\footnote{We've so far argued that the updating is occuring only if a sequence of that length exists. We now only need to show that all longest sequences are considered.} This update method is exhaustive as the longest increasing subsequence ending at $x_j$ has a penultimate element at some $x_k$ and this case is considered by the inductive step. \\
+\noindent \textit{Proof of Correctness.} First, we'll argue that the two arrays are filled correctly. Its trivial to see that the case of $j = 1$ is filled correctly. By induction on $k$, when $\ell[j]$ is updated, there is some increasing subsequence which ends at $x_j$ and has length $\ell[j]$. This sequence is precisely the longest subsequence ending at $x_k$ followed by $x_j$. The appropriate definition for $p[j]$ is immediate.\footnote{We've so far argued that the updating is occuring only if a sequence of that length exists. We now only need to show that all longest sequences are considered.} This update method is exhaustive as the longest increasing subsequence ending at $x_j$ has a penultimate element at some $x_k$ and this case is considered by the inductive step. \\
 
 \noindent By finding the $\arg \max$ of $\ell$, we find the length of the longest subsequence as the subsequence must necessarily end at some $x_j$. By the update rules stated above, for $k = p[j]$, we see that $\ell[k] = \ell[j] - 1$ and $x_k < x_j$. Therefore, \emph{a} longest subsequence is the solution to the subproblem $k$ and $x_j$. The backtracking algorithm stated above, recursively finds the solution to the subproblme.\footnote{Backtracking is as complicated as you make it to be. All one needs to do is argue that the solution to the backtracked problem will help build recursively the solution to the problem at hand.} Reversing the subsequence produces it in the appropriate order. \\
 
-\noindent \textbf{Complexity.} The outer loop runs $n$ iterations and the inner loop runs at most $n$ iterations, with each iteration taking constant time. Backtracking takes at most $O(n)$ time as the longest subsequence is at most length $n$. The total complexity is therefore: $O(n^2)$.\footnote{Don't bother writing out tedious arithmetic that both of us know how to do.}
+\noindent \textit{Complexity.} The outer loop runs $n$ iterations and the inner loop runs at most $n$ iterations, with each iteration taking constant time. Backtracking takes at most $O(n)$ time as the longest subsequence is at most length $n$. The total complexity is therefore: $O(n^2)$.\footnote{Don't bother writing out tedious arithmetic that both of us know how to do.}
 
-
-
-
+\end{alg}
 
 
 
@@ -339,7 +348,7 @@ Okay, so we've gotten through defining Big O Notation so now we need to go about
 
 
 \newpage
-\section{The GCD Algorithm}
+\section{Introductory Topics}
 
 \subsection{Recursion}
 
@@ -412,7 +421,7 @@ So in two calls, we get to a position from where inductively we make at most $k-
 
 \subsection{Duality}
 
-\noindent Incidentally, this isn't the only problem that benefits from this recursive structure of looking at modular terms. We're going to look at a \emph{dual} problem that shares the same structure. Formally for optimization problems,
+\noindent Incidentally, this isn't the only problem that benefits from this recursive structure of looking at modular terms. We're going to look at a \emph{dual} problem that shares the same structure.\footnote{There of course also duals of minimization problems. Just consider the negation of the maximization problem as per usual.} Formally for optimization problems,
 
 \begin{framed}
 \begin{defn}[Duality]
@@ -456,10 +465,46 @@ Before you get some alternate idea, let me state it that \emph{Dynamic Programmi
 \end{enumerate}
 \end{framed}
 
-\noindent In other words, your algorithm trying to calculate $f(x)$ might recursively call $f(y)$ many times. It will be therefore, more efficient to store the value of $f(y)$ and recall it rather than calculating it again and again. I know that's confusing, so lets look at a couple examples to clear it up. 
+\noindent \noindent In other words, your algorithm trying to calculate $f(x)$ might recursively call $f(y)$ many times. It will be therefore, more efficient to store the value of $f(y)$ and recall it rather than calculating it again and again. I know that's confusing, so lets look at a couple examples to clear it up. 
 
 \subsection{Tribonacci Numbers, an example}
-\noindent I'll introduce computing `tribonacci' numbers as a preliminary example\footnote{The easiest example is Fibonacci numbers but as I've given you the explicit formula in the previous chapter, it seems moot. Although this problem is also rather easily solvable with recurrence relations, but bear with me.} The tribonacci numbers are defined by $T_0 = 1, T_1 = 1, T_2 = 1$ and $T_k = T_{k_1} + T_{k-2} + T_{k - 3}$ for $k \geq 3$.
+\noindent I'll introduce computing `tribonacci' numbers as a preliminary example\footnote{The easiest example is Fibonacci numbers but as I've given you the explicit formula in the previous chapter, it seems moot. Although this problem is also rather easily solvable with recurrence relations, but bear with me.} The tribonacci numbers are defined by $T_0 = 1, T_1 = 1, T_2 = 1$ and $T_k = T_{k -1} + T_{k-2} + T_{k - 3}$ for $k \geq 3$. \\
+
+\noindent Let's think about what happens when we calculate $T_9$. We first need to know $T_6, T_7$ and $T_8$. But recognize that calculating $T_7$ requires calculating $T_6$ as well as $T_7 = T_4 + T_5 + T_6$. So does $T_8$. This is the problem of overlapping subproblems. $T_6$ is going to be calculated 3 times in this problem if done na\"ively and in particular if we want to calculate $T_k$ the base cases of $T_0, T_1, T_2$ are going to be called $\exp(O(k))$ many times.\footnote{This isn't abusive notation. This is equivalent to saying the complexity is $O(b^k)$ for some base $b$. Check for yourself that this is true.} To remedy this, we are going to write down a table of values. Here let's assume the word model again.
+
+\begin{alg}[Tribonacci Numbers]
+Initialize a table $t[j]$ of size $k$. Fill in $t[0] \leftarrow 1, t[1] \leftarrow 1, t[2] \leftarrow 1$. For $2 \leq j \leq k$, sequentially, fill in $T[j] \leftarrow t[j-1] + t[j-2] + t[j-3]$. Return the value in $t[k]$. \\
+
+\noindent \textit{Proof of Correctness}. We proceed by induction to argue $t[j] = T_j$. Trivially, the base cases are correct and by the equivalence of definition of $t[j]$ and $T_j$, each $t[j]$ is filled correctly.\footnote{Not all proofs of correctness will be this easy, but not will be too much more complicated. State what each element of the table should equal and argue its correctness.} Therefore, $t[k] = T_k$. \\
+
+\noindent \textit{Complexity.} Calculation of each $T[j]$ is constant given the previously filled values. As $O(k)$ such values are calculated, the total complexity is $O(k)$.\footnote{In one of the recitations, we will show how Fibonacci (also same complexity) can actually be run faster than $O(k)$ using repeated squaring.}
+\end{alg}
+
+\noindent That example was far too easy but a useful starting point for understanding how Dynamic Programming works. 
+
+\subsection{Generic Algorithm and Runtime Analysis}
+When you have such a problem on your hands, the generic DP algorithm proceeds as follows:
+\begin{alg}[Generic Dynamic Programming Algorithm]
+For any problem,
+\begin{enumerate}
+\item Iterate through all subproblems, starting from the ``smallest'' and building up to the ``biggest.''\footnote{It's not necessary for ``smallest'' and ``biggest'' to refer to literal size. All that matters is that when the algorithm comes to a subproblem, it should be ready for it, i.e. it should already have solved the sub-subproblems that are useful for solving that subproblem.
+} For each one:
+\begin{enumerate}
+\item Find the optimal value, using the previously-computed optimal values to smaller subproblems.
+\item Record the choices made to obtain this optimal value. (If many smaller subproblems were considered as candidates, record which one was chosen.)
+\end{enumerate}
+\item At this point, we have the \emph{value} of the optimal solution to this optimization problem (the length of the shortest edit sequence between two strings, the number of activities that can be scheduled, etc.) but we don't have the actual solution itself (the edit sequence, the set of chosen activities, etc.) Go back and use the recorded information to actually reconstruct the optimal solution.
+\end{enumerate}
+\end{alg}
+
+\noindent The basic formula for the runtime of a DP algorithm is
+\[
+\text{Runtime} = (\text{Total number of subproblems}) \times \left(\begin{array}{c}\text{Time it takes to solve problems} \\ \text{given solutions to subproblems.}\end{array}\right)
+\]
+(Warning: sometimes, a more nuanced analysis is needed.)
+
+\subsection{$k$-Clustering, an example}
+Now might be a good time and go back to Chapter 2 and read the full Dynamic Programming Example. A classic Dynamic Programming problem is that of $k$-Clustering.
 
 \newpage
 \section{Greedy Algorithms}
@@ -470,8 +515,353 @@ Before you get some alternate idea, let me state it that \emph{Dynamic Programmi
 \newpage
 \section{Branch and Bound}
 
+\subsection{Preliminaries}
+So far we have covered Dynamic Programming, Greedy Algorithms, and (some) Graph Algorithms. Other than a few examples with Knapsack and Travelling Salesman, however, we have mostly covered $\textbf{P}$ algorithms. Now we turn to look at some $\textbf{NP}$ algorithms. Recognize, that, we are not going to come up with any $\textbf{P}$ algorithms for these problems but we will be able to radically improve runtime over a na\"ive algorithm. \\
+
+\noindent Specifically we are going to discuss a technique called Branch and Bound. Let's first understand the intuition behind the technique. Assume we are trying to maximize a function $f$ over a exponentially large set $X$. However, not only is the set exponentially large but $f$ might be computationally intensive on this set. Fortunately, we know of a function $h$ such that $f \leq h$ everywhere. \\
+
+\noindent Our na\"ive strategy is to keep a maximum value $m$ (initially at $-\infty$) and for each $x \in X$, update it by $m \leftarrow \max \{m, f(x)\}$. However, an alternative strategy would be to calculate $h(x)$ first. If $h(x) \leq m$ then we know $f(x) \leq h(x) \leq m$ so the maximum will not change. So we can effectively avoid computing $f(x)$ saving us a lot on computation! However, if $h(x) > m$ then we cannot tell anything about $f(x)$ so we would have to compute $f(x)$ to check the maximum. So, in the worst case, our algorithm could take the same time as the na\"ive algorithm. But if we have selected a function $h$ that is a tight bound (i.e. $h - f$ is very small) then we can save a lot of computational time. \\
+
+\noindent Note: this is not Branch and Bound; this is only the intuition behind the technique. Branch and Bound requires more structure but has a very similar ring to it.
+
+\subsection{Knapsack, an example}
+Now that we've gone over some broader intuition, let's try an example and then come back for the formalism. Let's consider the Knapsack problem. We can rewrite Knapsack as a $n$-level decision problem, where at each level $i$, we choose whether to include item $i$ in our bag or not. Figure \ref{fullknapsack} gives the intuition for this decision tree. As drawn, the left hand decision matches choosing the item and the right hand decision matches leaving the item. In the end, we are left with $2^n$ nodes, each representing a unique choice of items and its respective weight and value. We are then left with maximizing over all choices (leaves) that satisfying our weight constraint $W$. \\
+
+\noindent However, this wasn't efficient! We spent a lot of time traversing parts of the tree that we knew had surpassed the weight constraint. So, a smarter strategy would be to truncate the tree at any point where the weight up to that point has passed the weight constraint. We see this in Figure \ref{cutknapsack}. Now, the problem is a lot faster as we've seriously reduced our runtime.  Notice though, we cannot guarantee any truncations of the graph, so the asymptotic runtime of this problem is still $O(2^n)$ as we have $2^n$ possibilities for item sets.
+
+\begin{sidewaysfigure}
+\centering
+{
+    \begin{tikzpicture}[->,>=stealth', level/.style={sibling distance = 16cm/#1, level distance = 3cm}, scale=0.6, transform shape]
+    \tikzstyle{level 2}=[sibling distance = 8cm]
+     \tikzstyle{level 3}=[sibling distance = 4cm]
+     \tikzstyle{level 4}=[sibling distance = 2cm]
+    \node [treenode] {Item 1 \\ W: 0 \\ V: 0}
+    child
+    {
+        node [treenode] {Item 2 \\ W: 5 \\ V: 20} 
+        child
+        {
+            node [treenode] {Item 3 \\ W: 15 \\ V: 80 }
+            child 
+            {
+                node [treenode] {Item 4 \\ W: 21 \\ V: 85 }
+                child
+                {
+                    node [treenode] {Result \\ W: 24 \\ V: 95}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 21 \\ V: 85}
+                }
+            }
+            child
+            {
+                node [treenode] {Item 4 \\ W: 15 \\ V: 80 }
+                child
+                {
+                    node [treenode] {Result \\ W: 24 \\ V: 95}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 21 \\ V: 85}
+                }
+            }
+        }
+        child
+        {
+            node [treenode] {Item 3 \\ W: 5 \\ V: 20}
+            child 
+            {
+                node [treenode] {Item 4 \\ W: 11 \\ V: 25 }
+                child
+                {
+                    node [treenode] {Result \\ W: 14 \\ V: 35}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 11 \\ V: 25}
+                }
+            }
+            child
+            {
+                node [treenode] {Item 4 \\ W: 5 \\ V: 20 }
+                                child
+                {
+                    node [treenode] {Result \\ W: 8 \\ V: 30}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 5 \\ V: 20}
+                }
+            }
+        }
+    }
+    child
+    {
+        node [treenode]{Item 2 \\ W: 0 \\ V: 0}
+        child
+        {
+            node [treenode] {Item 3 \\ W: 10 \\ V: 60 } 
+            child 
+            {
+                node [treenode] {Item 4 \\ W: 16 \\ V: 65 }
+                                child
+                {
+                    node [treenode] {Result \\ W: 19 \\ V: 75}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 16 \\ V: 65}
+                }
+            }
+            child
+            {
+                node [treenode] {Item 4 \\ W: 10 \\ V: 60 }
+                child
+                {
+                    node [treenode] {Result \\ W: 13 \\ V: 70}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 10 \\ V: 60}
+                }
+            } 
+        }
+        child
+        {
+            node [treenode] {Item 3 \\ W: 0 \\ V: 0}
+            child 
+            {
+                node [treenode] {Item 4 \\ W: 6 \\ V: 5 }
+                                child
+                {
+                    node [treenode] {Result \\ W: 9 \\ V: 15}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 6 \\ V: 5}
+                }
+            }
+            child
+            {
+                node [treenode] {Item 4 \\ W: 0 \\ V: 0 }
+                child
+                {
+                    node [treenode] {Result \\ W: 3 \\ V: 10}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 0 \\ V: 0}
+                }
+            }
+        }
+    }
+;
+\end{tikzpicture}
+}
+
+\caption{A graph illustration of the Knapsack decision problem. Assume 4 items with weights 5, 10, 6, 3, and values, 20, 60, 5, 10, respectively. Set the weight constraint to be 10. Here all paths are considered. Next figure shows the truncation we can do. \label{fullknapsack}}
+\end{sidewaysfigure}
+
+\begin{sidewaysfigure}
+\centering
+{
+    \begin{tikzpicture}[->,>=stealth', level/.style={sibling distance = 16cm/#1, level distance = 3cm}, scale=0.6, transform shape]
+    \tikzstyle{level 2}=[sibling distance = 8cm]
+     \tikzstyle{level 3}=[sibling distance = 4cm]
+     \tikzstyle{level 4}=[sibling distance = 2cm]
+    \node [treenode] {Item 1 \\ W: 0 \\ V: 0}
+    child
+    {
+        node [treenode] {Item 2 \\ W: 5 \\ V: 20} 
+        child
+        {
+            node [treenode] {Item 3 \\ W: 15 \\ V: 80 }
+        }
+        child
+        {
+            node [treenode] {Item 3 \\ W: 5 \\ V: 20}
+            child 
+            {
+                node [treenode] {Item 4 \\ W: 11 \\ V: 25 }
+            }
+            child
+            {
+                node [treenode] {Item 4 \\ W: 5 \\ V: 20 }
+                                child
+                {
+                    node [treenode] {Result \\ W: 8 \\ V: 30}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 5 \\ V: 20}
+                }
+            }
+        }
+    }
+    child
+    {
+        node [treenode]{Item 2 \\ W: 0 \\ V: 0}
+        child
+        {
+            node [treenode] {Item 3 \\ W: 10 \\ V: 60 } 
+        }
+        child
+        {
+            node [treenode] {Item 3 \\ W: 0 \\ V: 0}
+            child 
+            {
+                node [treenode] {Item 4 \\ W: 6 \\ V: 5 }
+                                child
+                {
+                    node [treenode] {Result \\ W: 9 \\ V: 15}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 6 \\ V: 5}
+                }
+            }
+            child
+            {
+                node [treenode] {Item 4 \\ W: 0 \\ V: 0 }
+                child
+                {
+                    node [treenode] {Result \\ W: 3 \\ V: 10}
+                }
+                child
+                {
+                    node [treenode] {Result \\ W: 0 \\ V: 0}
+                }
+            }
+        }
+    }
+;
+\end{tikzpicture}
+}
+
+\caption{A graph illustration of the Knapsack decision problem. Assume 4 items with weights 5, 10, 6, 3, and values, 20, 60, 5, 10, respectively. Set the weight constraint to be 9. Here we truncate unfeasible paths early.\label{cutknapsack}}
+\end{sidewaysfigure}
+
+\subsection{Formalism}
+Let's formalize the intuition we built from Knapsack and generate a rigorous structure which we can use to solve other Branch and Bound problems. These are the qualities we are looking for in a Branch and Bound problem.
+
+\begin{framed}
+\noindent \textbf{Properties of Branch and Bound Algorithm.} \\
+\begin{enumerate}
+\item The problem should be expressible as a maximization of a function $f: L \rightarrow \RR$ where $L$ is the set of leaves of some tree $T$.
+\item We can define a function $h: T \rightarrow \RR$ defined on all nodes of the tree such that $f(\ell) \leq h(t)$ if $\ell$ is a descendant leaf of $t$. (Here $t$ is any node in the graph. Note $\ell$ and $t$ could be the same).
+\end{enumerate}
+\end{framed}
+\noindent Note we can also write minimization problems in this manner by considering $(-f)$. So, for the rest of this lecture, I am only going to discuss maximization problems without loss of generality. This gives us a natural generic algorithm for solving a Branch and Bound problem.
+
+\subsubsection{Generic Algorithm}
+\begin{framed}
+\begin{alg}[Branch and Bound Algorithm] For any problem,
+\begin{enumerate}
+\item Write the problem as a maximization of $f: L \rightarrow \RR$ where $L$ is the set of leaves of a tree $T$.
+\item Let $m \leftarrow -\infty$ and $x \leftarrow \text{null}$. This is the current maximum value achieved and the leaf achieving it.
+\item Beginning at the root $r$ of $T$, traverse the tree in pre-order (i.e. run a calculation at node $t$, the traverse recursive each of its children). For every node $t$ encountered do the following:
+\begin{enumerate}
+	\item If $t$ isn't a leaf, check if $h(t) < m$. If so, then truncate the traversal at $t$ (i.e. don't consider any of $t$'s descendants)
+	\item If $t$ is a leaf, calculate $f(t)$. If $f(t) < m$, $m \leftarrow f(t)$ and $x \leftarrow t$ (i.e. update the maximum terms)
+\end{enumerate}
+\item Return $x$.
+\end{enumerate}
+\end{alg}
+\end{framed}
+
+\paragraph{Algorithm Correctness}
+The na\"ive algorithm would run by traversing the tree and updating the maximum at each leaf $\ell$ and then returning the maximum. The only difference we make is, we claim we can ignore all the descendants of a node $t$ if $h(t) < m$. Why? For any descendant $\ell$ of $t$ by the property above $f(\ell) \leq h(t)$. As $h(t) < m$ then $f(\ell) < m$ as well. Therefore, the maximum will never update by considering $\ell$. As this is true for any descendant $\ell$, we can ignore its entire set of descendants.
+
+\subsubsection{Formalizing Knapsack}
+Let's apply this formalism concretely to the Knapsack problem. We've already seen the natural tree structure. So let's define the functions $f$ and $h$. Every leaf $L$ can be expressed as a vector in $\{0,1\}^n$ where the $i$th index is 1 if we use item $i$ and $0$ if not. So $L = \{0, 1\}^n$. Furthermore, we can define $T$ as
+\begin{equation}
+T = \left \{ \{0,1\}^k \ \middle \vert \ 0 \leq k \leq n \right\}
+\end{equation}
+Informally, every node in $T$ at height $k$ is similarly expressible as $\{0, 1\}^k$ where the $i$th index again represents whether item $i$ was chosen or not. Each node $v \in \{0, 1\}^k$ for $0 \leq k \leq n$ has children $(v, 1)$ and $(v,0)$ in the next level. \\
+
+\noindent We can define the function $f : L = \{0,1\}^n \rightarrow \RR$ as follows:
+\begin{equation}
+f(\mathbf{\ell}) = f(\ell_1 \ldots \ell_n) = \mathds{1}_{\displaystyle \left\{ \ell_1 w_1 + \ldots + \ell_n w_n \leq W \right \}} \cdot \left( \ell_1 v_1 + \ldots \ell_n v_n \right)
+\end{equation}
+Here $\mathds{1}_{\{\cdot\}}$ is the indicator function. It is 1 if the statement inside is true, and 0 if false. Therefore, what $f$ is saying in simple terms is that the value of the items is $0$ if the weights pass the capacity and otherwise is the true value $\ell_1 v_1 + \ldots + \ell_n v_n$. Define the function $h: T \rightarrow \RR$ as:
+\begin{equation}
+h(\mathbf{t}) = f(t_1 \ldots t_k) = \begin{cases} \infty & \text{ if } t_1 w_1 + \ldots t_k w_k \leq W \\ 0 & \text{ otherwise } \end{cases}
+\end{equation}
+Let's verify that $f$ and $h$ have the desired relation. If $h(t) = \infty$ then obviously $f(\ell) \leq h(t)$, so we don't need to check this case. If $h(t) = 0$ then $t_1 w_1 + \ldots + t_k w_k > W$. Any descendant $\ell$ of $t$ will satisfy $\ell_1 = t_1, \ldots, \ell_k = t_k$. Therefore,
+\begin{equation}
+(\ell_1 w_1 + \ldots + \ell_k w_k) + (\ell_{k+1} w_{k+1} + \ldots + \ell_n w_n) \geq t_1 w_1 + \ldots t_k w_k > W
+\end{equation}
+Therefore, the indicator function is $0$ so $f(\ell) = 0$ so $f(\ell) \leq h(t)$. So, we have completely written Knapsack in the Branch and Bound formalism. Effectively, we've converted our intuition of disregarding any item set that exceeds the weight capacity early into a formal function. 
+
+
 \newpage
 \section{Divide and Conquer}
+The divide and conquer technique is a recursive technique that splits a problem into 2 or more subproblems of equal size. General problems that follow this technique are sorting, multiplication, and discrete Fourier Transforms.
+
+\subsection{Generic Algorithm Design}
+\paragraph{Algorithm}
+\begin{enumerate}
+\item For positive integer $b > 1$, divide the problem into $b$ parts
+\item (Divide) Recursively solve the subproblems
+\item (Conquer) Consider any situations that transcend subproblems
+\end{enumerate}
+
+\paragraph{Complexity} By the construction, the time complexity of the algorithm $T(n)$ satisfies the recurrence relation: 
+\begin{equation}
+T(n) = a T\left(\frac{n}{b}\right) + f(n)
+\end{equation}
+where $f(n)$ is the time it takes to compute step 3 (above). In class, we looked at the following theorem about runtime:
+\thm{(Master Theorem) If $T(n)$ satisfies the above recurrence relation, then if
+\begin{itemize}
+\item if $\exists \ c > 1, n_0$ such that for $n > n_0$, $a f(n/b) \geq c f(n)$ then $T(n) \in \Theta(n^{\log_b a})$
+\item if $f(n) \in \Theta(n^{\log_b a})$ then $T(n) \in \Theta(n^{\log_b a} \log n)$
+\item if $\exists \ c < 1, n_0$ such that for $n > n_0$, $a f(n/b) \leq c f(n)$ then $T(n) \in \Theta(f(n))$
+\end{itemize}
+}
+
+\proof Convince yourself that $a^{\log_b n} = n^{\log_b a}$. By induction, its easy to see that 
+\begin{equation}
+T(n) = a^j T\left(\frac{n}{b^j}\right) + \sum_{k = 0}^j a^k f\left(\frac{n}{b^k}\right)
+\end{equation}
+Apply to $j = \log_b n$ and recognize $T(1)$ is a constant so
+\begin{equation}
+T(n) = \Theta(a^{\log_b n}) + \sum_{k = 0}^{\log_b n} a^k f\left(\frac{n}{b^k}\right)
+\end{equation}
+Let's consider the first case. We apply the relation to get\footnote{I've made the simplifaction here that $n_0 = 0$. As an excercise, convince yourself this doesn't effect anything, just makes the algebra a little more complicated.} 
+\begin{equation}
+\begin{aligned}
+T(n) &= \Theta(a^{\log_b n}) + a^{\log_b n} f(1) \sum_{k = 0}^{\log_b n} c^{-k} \\
+&= \Theta(a^{\log_b n}) + \Theta \left(a^{\log_b n} \frac{c}{c-1}\right) \\
+&= \Theta(a^{\log_b n}) = \Theta(n^{\log_b a})
+\end{aligned}
+\end{equation}
+For the second case,
+\begin{equation}
+\begin{aligned}
+T(n) &= \Theta(a^{\log_b n}) + \sum_{k = 0}^{\log_b n} a^k \Theta \left( \left( \frac{n}{b^k} \right)^{\log_b a} \right) \\
+&= \Theta(n^{\log_b a}) + \sum_{k = 0}^{\log_b n} a^k \left( \frac{\Theta(n^{\log_b a})}{a^k} \right) \\
+&= \Theta(n^{\log_b a} \log n)
+\end{aligned}
+\end{equation}
+For the third case, recognize that it's nearly identical to the first except the sumations are bounded in the other direction which leaves $f(n)$ as the dominating term. \qed
+
+\subsection{Closest Two Points, an example}
+
+\paragraph{Problem} Given a set $S = \{s_1, \ldots s_n\}$ where $s_i = (x_i, y_i)$ find the two closest points in euclidean distance.
+
+\paragraph{Algorithm}\footnote{The way I've written an algorithm here is not the way you should write one in this course. I've iterjected a lot of unneccessary details to guide the explanation.} We consider a divide and conquer algorithm. First sort the points by both $x$ and $y$ coordinate. This gives us two distinct permutations $\pi, \sigma$ such that
+\begin{equation}
+x_{\pi(1)} \leq \ldots \leq x_{\pi(n)} \qquad y_{\sigma(1)} \leq \ldots \leq y_{\sigma(n)}
+\end{equation}
+Following the divide and conquer technique we calculate $d$ the minimum distance of the following two recursive problems: $S_1 = \{s_{\pi(1)}, \ldots, s_{\pi(n/2)}\}$ and $S_2 = \{s_{\pi(n/2 + 1)}, \ldots, s_{\pi(n)}\}$. (Note these are presorted so we don't need to consider sorting them again.) \\
+
+\noindent Now, we need to consider any point pairs that transcend this seperation. Recognize that we only care about points whose euclidean distance is less than $d$. Therefore, their $x$ distance is also $< d$. So, we need to consider any point pairs $s_i, s_j$ that have $x_i, x_j \in [x_{\pi(n/2)}-d, x_{\pi(n/2)}+d]$. Okay now let $T_1 \subseteq S_1$ be the subset $\{s_i \ : x_i \geq x_{\pi(n/2)}-d\}$ adn $T_2 \subseteq S_2$ be the subset $\{s_j : x_j \leq x_{\pi(n/2)} + d\}$. So we're interested in pairs from $(T_1, T_2)$. \\
+
+\noindent Na\"ively, this will take $O(n^2)$ time because $T_1$ could equal $S_1$ and $T_2$ equal $S_2$. However, we know points are seperated by at least $d$ on either side of $x_{\pi(n/2)}$. Therefore, there can only be one point per $(d/2) \times (d/2)$ square on either side. Therefore, for any point $s_i \in T_1$ we only need to consider the ten closest points in $y$ distance to $s_i$ from $T_2$.\footnote{If this is confusing, the \href{https://en.wikipedia.org/wiki/Closest_pair_of_points_problem}{Wikipedia page} for this problem has a good picture.} \\
+
+\noindent We've already sorted by $y$, so if we construct $T_1$ and $T_2$ in $O(n)$ time from the $y$ sorted list, we can then find pairs that transcend the seperation in $10 \cdot n/2$ comparisons which is $O(n)$. By the Master Theorem, we get a runtime of $O(n \log n)$.
 
 \newpage
 \section{Multiplicative Weights Algorithm}
