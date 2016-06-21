@@ -1,0 +1,397 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage{fancyhdr}
+\usepackage[headsep=1cm,total={6.5in, 8.5in}]{geometry}
+\usepackage[hidelinks,colorlinks]{hyperref}
+\usepackage{mathdots, framed, dsfont}
+\usepackage{longtable, array, supertabular, commath, graphicx, mathtools}
+
+\usepackage{amsfonts}
+\makeatletter
+\def\amsbb{\use@mathgroup \M@U \symAMSb}
+\makeatother
+
+\usepackage{enumerate}
+
+
+\makeatletter
+\def\amsbb{\use@mathgroup \M@U \symAMSb}
+\makeatother
+
+
+\usepackage{amsmath,amssymb, amsthm, mathtools, commath,mathrsfs}
+
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section] % reset theorem numbering for each chapter
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{exer}[thm]{Exercise}
+
+\newtheorem{defn}[thm]{Definition} % definition numbers are dependent on theorem numbers
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{claim}[thm]{Claim}
+\newtheorem{nota}[thm]{Notation}
+\newtheorem{exmp}[thm]{Example} % same for example numbers
+
+\newcommand\diff{\mathrm{d}}
+\newcommand{\borel}{\mathfrak{B}}
+\newcommand{\BB}{\mathcal{B}}
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\Cov}{\mathbf{Cov}}
+\newcommand{\EE}{\mathbf{E}\hspace{0.02em}}
+\newcommand{\FF}{\mathbf{F}}
+\newcommand{\GG}{\mathcal{G}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\II}{\mathbf{I}}
+\newcommand{\LL}{\mathbb{L}}
+\newcommand{\KK}{\mathcal{K}}
+\newcommand{\JJ}{\mathcal{J}}
+\newcommand{\PP}{\mathbf{Pr}\hspace{0.02em}}
+\newcommand{\poly}{\text{poly}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\NNN}{\mathcal{N}}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\OPT}{\textbf{OPT}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\rnk}{\textbf{rnk}\hspace{0.05em}}
+\newcommand{\tr}{\begin{bf}tr\end{bf}\hspace{0.05em}}
+\newcommand{\TT}{\mathscr{T}}
+\newcommand{\UU}{\mathcal{U}}
+\newcommand{\Var}{\mathbf{Var}\hspace{0.13em}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\Gal}{\text{Gal}}
+\newcommand{\Aut}{\text{Aut}}
+\newcommand{\nsub}{\trianglelefteq}
+\newcommand{\nullset}{\varnothing}
+\newcommand{\topo}{\mathscr{T}}
+\newcommand{\ve}{\varepsilon}
+\newcommand{\inv}[1]{#1^{-1}}
+\newcommand{\sgn}[1]{\hspace{0.08em}\mathbf{sgn}\hspace{0.02em}\left(#1\right)}
+\newcommand{\str}[1]{{#1}_\epsilon}
+\newcommand{\short}[1]{\mbox{\sc #1}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\id}{\text{id}}
+\newcommand{\diag}{\textbf{diag}}
+\newcommand{\der}[2]{\frac{\dif #1}{\dif #2}}
+\newcommand{\pder}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\pderthree}[3]{\frac{\partial^2 #1}{\partial#2 \partial#3}}
+
+\newcommand{\true}{\short{true}}
+\newcommand{\false}{\short{false}}
+\newcommand{\nil}{\short{null}}
+
+\newcommand{\tz}{{\tilde z}}
+
+\newcommand{\floor}[1]{\left\lfloor #1\right\rfloor}
+
+\newcommand{\LPeq}[6]{
+\begin{array}{lll@{}l}
+#1  & \displaystyle #2 &\\[1.1em]
+\st & \displaystyle #3  & #4\\[1.1em]
+    & \displaystyle #5  & #6
+\end{array}
+}
+
+\newcommand{\sdp}{\mbox{\sc sdp}\hspace{0.01em}}
+\newcommand{\maxcut}{\mbox{\sc maxcut}\hspace{0.01em}}
+\newcommand{\maxqp}{\mbox{\sc maxqp}\hspace{0.01em}}
+\newcommand{\mapprox}{\mbox{\sc 0th-moment-approx}\hspace{0.01em}}
+
+\newcommand{\LPeqsimple}[4]{
+\begin{array}{lll@{}l}
+#1  & \displaystyle #2 &\\[1.1em]
+\st & \displaystyle #3  & #4
+\end{array}
+}
+
+\newcommand{\LPeqcomplex}[8]{
+\begin{array}{lll@{}l}
+#1  & \displaystyle #2 &\\[1.1em]
+\st & \displaystyle #3  & #4\\[1.1em]
+    & \displaystyle #5  & #6\\[1.1em]
+    & \displaystyle #7  & #8
+\end{array}
+}
+
+\usepackage{amsmath}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\chead{}
+\lhead{\leftmark}
+\cfoot{\thepage}
+
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+
+
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\ \\ \ \\ \ \\ \ \ \\ \ \\ \ \\ \ \\ \ \\ 
+	{\scshape\LARGE CS 38/138: An Introduction to Algorithms \par}
+	\vspace{1cm}
+	{\scshape\Large Spring 2016\par}
+	\vspace{0.5cm}
+	{\Large\itshape Notes\par}
+	\vspace{2cm}
+	{\begin{figure}[!h]
+\centering
+\includegraphics[width=0.35\textwidth]{tech_seal.png}
+\end{figure}}
+
+	\vspace{3.5cm}
+	{\Large\itshape Chinmay Nirkhe\par}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Preface}
+These notes are intended to be supplementary material to go along with the lectures for CS 38 as taught at Caltech in Spring of 2016. They in no means replace the content in the lectures and recitation sections of the course, and I highly encourage you attend them. I encourage you to read these lecture notes prior to class as a method of quickly reviewing the material for the course. \\
+
+\noindent I took this course in the spring of 2015 and was a TA for the course in 2016. I wrote these notes as an extension of most of the recitations I gave during the year and in particular tried to emphasize how to write proofs effectively and concisely. The first couple chapters will have plenty of examples of fully written proofs for algorithms and you should use these as templates for writing your solution sets. The later chapters will relax this slightly; I will be more succinct and might omit certain parts of the proof as exercises for you the reader. There is a lot of additional information that I have included in the footnotes; I highly encourage you to read them as some of them are tangential musings while others actual carry rather pertinent information to the subject. \\
+
+\noindent A word of warning, however. I go into a lot of detail about the mathematics (as it interests me). I've tried to make it as accessible as possible by adding definitions for mathematical concepts as well as the intuition behind some of these definitions. However, if you are lost, Wikipedia is a good source for these definitions. \\
+
+\noindent I hope you enjoy this course as much as I did and feel free to ask me or any of the TAs questions. If you spot errors in these notes please let me know right away as I guarantee you that there will be plenty. I had a great time writing these notes and as I wrote them, I realized there was so much I hadn't understood the first and second times looking at this course. Please also take your own notes, but hopefully these will help you through this course. \\
+
+\noindent --Chinmay
+
+\newpage
+
+\section{Designing an Algorithm}
+
+\noindent Designing an algorithm is an art and something which this course will help you perfect. At the fundamental level, an algorithm is a set of instructions that manipulate an input to produce an output. For those of you with experience programming, you have often written a program to compute some function $f(x)$ only to find yourself riddled with (a) syntax errors and (b) algorithmic errors. In this class, we won't worry about the former, and instead focus on the latter. In this course, you will not be asked to construct any implementations of algorithms. Meaning we don't expect you to write any `pseudocode' or code for the problems at hand. Instead, give an explanation of what the algorithm is intending to do and then provide an argument (i.e. proof) as to why the algorithm is correct. \\
+
+\noindent A general problem you will find on your sets will ask you to \emph{design} an algorithm $X$ to solve a certain problem with a runtime $Y$\footnote{If no runtime is given, find the best runtime possible.}. Your solution should contain three parts:
+\begin{enumerate}
+\item An algorithm description.
+\item A proof of correctness.
+\item A statement of the complexity.
+\end{enumerate}
+I strongly suggest that your solutions keep these three sections separate (see the examples). This will make it much easier for you to keep your thoughts organized (and the grader to understand what you are saying).
+
+\subsection{Algorithm Description}
+When specifying an algorithm, you have to provide the right amount of detail. I often express that this is similar to how you would right a lab report in a chemistry or physics lab today compared to what you would write in grade school. The level of precision is different because you are writing to a different audience. Identically, the audience to whom you are writing you should assume has a fair experience with algorithms and programming. If written correctly, your specification should provide the reader with an exercise in programming (i.e. actually implementing the algorithm in a programming language). You should be focusing on the exercise of designing the algorithm. In general, I suggest you follow these guidelines:
+
+\begin{enumerate}[(a)]
+\item You are writing for a \emph{human} audience. Don't write C code, Java code, Python code, or any code for that matter. Write plain, technical English. Its highly recommended that you use \LaTeX \ to write your solutions. The examples provided should give you a good idea of how to weave in the technical statements and English. For example, if you want to set $m$ as the max of an array $a$ of values, \textbf{don't} write a for loop iterating over $a$ to find the maximizing element. Instead the following technical statement is sufficient.\footnote{It is notational practice to set a variable using the $\leftarrow$ symbol. This avoids the confusing abusive notation of the = symbol.}
+\begin{equation}
+m \leftarrow \max_{x \in a} \{ x \}
+\label{eq:1-max}
+\end{equation}
+
+\item Don't spend an inordinate time trying to find `off-by-one' errors in your code. This doesn't really weigh in much on the design of the algorithm or its correctness and is more an exercise in programming. Notice in the example in (\ref{eq:1-max}), if written nicely, you won't even have to deal with indexing! Focus on making sure the algorithm is clear, not the implementation.
+
+\item On the other hand, you can't generalize too much. There should still be a step-by-step feel to the algorithm description. However, there are some simplifications you can make. if we have in class already considered an algorithm $X$ that you want to use as a subroutine to then by all means, make a statement like `apply $X$ here` or `modify $X$ by doing (\ldots) and then apply here`. Please don't spend time writing out an algorithm that is already well known.
+
+\item If you are using a new data structure, explain how it works. Remember that data structures don't magically whisk away complexity. For example a min heap is $O(1)$ time to find the minimum, but $O(\log n)$ time to add an element. Don't forget these when you create your own data structures. However, if you are using a common data structure like a stack, you can take these complexities as given without proof. Make a statement like `Let $S$ be a stack' and say nothing more.
+\end{enumerate}
+
+\subsection{Proof of Correctness}
+A proof of correctness should explain how the nontrivial elements of your algorithm works. Your proof will often rely on the correctness of other algorithms it uses as subroutines. Don't go around reproving them. Assume their correctness as a lemma and use it to build a strong succinct proof. In general you will be provided with two different types of problems: Decision Problems and Optimization Problems. You will see examples of these types of problems throughout the class, although you should be familiar with Decision Problems from CS 21.
+
+\begin{defn}[Decision Problem]
+A decision problem is a function $f : \Sigma \rightarrow \{\true, \false\}$.\footnote{Here $\Sigma$ notes the domain on which the problem is set. This could be the integers, reals, set of tuples, set of connected graphs, etc.} Given an input $x$, an algorithm solving the decision problem efficiently finds if $f(x)$ is $\true$ or $\false$.\footnote{ Often a decision problem $f$ is phrased as follows: Given input $(x,k)$ with $x \in \Sigma, k \in \RR$  calculate if $g(x) \leq k$ for some function $g: \Sigma^* \rightarrow \RR$.}
+\end{defn}
+
+\begin{defn}[Optimization Problem]
+An optimization problem is a function $f : \Sigma \rightarrow \RR$\footnote{For the mathematicians out there reading this, you only need $f: \Sigma \rightarrow T$, where $T$ is a set with a total ordering.} along with a subset $\Gamma \subseteq \Sigma$. The goal of the problem is to find the $x \in \Gamma$ such that for all $y \in \Gamma$, $f(x) \leq f(y)$. 
+\end{defn}
+
+\noindent Recognize that as stated, this is a minimization problem. Any maximization problem can be written as a minimization problem by considering the function $-f$. We we call $x$ the $\arg \min$ of $f$ and could efficiently write this problem as finding
+\begin{equation}
+x \leftarrow \underset{y \in \Gamma}{\arg \min} \{f(y) \}
+\end{equation}
+When proving the correctness of a decision problem there are two parts. Colloquially these are called $yes \rightarrow yes$ and $no \rightarrow no$, although because of contrapositives its acceptable to prove $yes \rightarrow yes$ and $yes \leftarrow yes$. This means that you have to show that if your algorithm return $\true$ on input $x$ then indeed $f(x) = \true$ and if your algorithm returns $\false$ then $f(x) = \false$. \\
+
+\noindent When proving the correctness of an optimization problem there are also two parts. First you have to show that the algorithm returns a feasible solution. This means that you return an $x \in \Gamma$. Second you have to show optimality. This means that there is no $y \neq x \in \Gamma$ such that $f(y) < f(x)$. This is the tricky part and the majority of what this course focuses on. \\
+
+\noindent Many of the problem in this class involve combinatorics. These proofs are easy if you understand them and tricky if you don't. To make things easier on yourself, I suggest that you break your proof down into lemmas that are easy to solve and finally put them together in a legible simple proof.
+
+\subsection{Algorithm Complexity}
+This is the only section of your proof where you should mention runtimes. This is generally the easiest and shortest part of the solution. Explain where your complexity comes from. This can be rather simple such as: `The outer loop goes through $n$ iterations, and the inner loop goes through $O(n^2)$ iterations, since a substring of the input is specified by the start and end points. Each iteration of the inner loop takes constant time, so overall, the runtime is $O(n^3)$.' Don't bother mentioning steps that \emph{obviously} don't contribute to the asymptotic runtime. However, be sure to include runtimes for all subroutines you use. For more information on calculating runtimes, read the next section.
+
+
+\subsection{Example Solution}
+The following is an example solution. I've riddled it with footnotes explaining why each statement is important. Note the problem, I have solved here is a dynamic programming problem. It might be better to read that chapter first so that you understand how the algorithm works before reading this.
+
+\begin{exer}[Longest Increasing Subsequence]
+Given an array of integers $x_1, \ldots, x_n$, find the \emph{longest increasing subsequence} i.e. the longest sequence of indices $i_1 < i_2 < \cdots < i_k$ such that $x_{i_1} \leq x_{i_2} \leq \cdots \leq x_{i_k}$. Design an algorithm that runs in $O(n^2)$.
+\end{exer}
+
+\noindent \textbf{Algorithm Description.} This is a dynamic programming algorithm.\footnote{A sentence like this is a great way to start. It immediately tells the reader what type of algorithm to expect and can help you get some easy partial credit.} We will construct tables $\ell$ and $p$ where $\ell[j]$ will is the length of the longest increasing subsequence that ends with $x_j$ and $p[j]$ is the index of the penultimate element in the longest subsequence.\footnote{We've told the reader all the initializations we want to make that aren't computationally trivial. Furthermore, we've explained what the ideal values of the tables we want to propagate are. This way when it comes to showing the correctness, we only have to assert that their tables are filled correctly.} 
+
+\begin{enumerate}
+\item For $j = 1$ to $n$:\footnote{Its perfectly reasonable to use bullet points or numbers lists to organize your thinking. Just make sure you know that the result shouldn't be code.}
+\begin{enumerate}[(a)]
+\item Initialize $\ell[j] \leftarrow 1$ and $p[j] \leftarrow \nil$ (soon to be changed).
+\item For every $k < j$ such that $x_k < x_j$: If $\ell[k] + 1 > \ell[j]$, then set $\ell[j] \leftarrow \ell[k] + 1$ and $p[j] \leftarrow k$.
+\end{enumerate}
+\item Let $j$ be the $\arg \max$ of $\ell$. Follow $p$ backwards to construct the subsequence. That is, return the reverse of the sequence $j, p[j], p[p[j]], \ldots$ until some term has $p[j] = \nil$.\footnote{Resist the urge to write a while loop here. As stated is perfectly clear.}
+\end{enumerate}
+
+\noindent \textbf{Proof of Correctness.} First, we'll argue that the two arrays are filled correctly. Its trivial to see that the case of $j = 1$ is filled correctly. By induction on $k$, when $\ell[j]$ is updated, there is some increasing subsequence which ends at $x_j$ and has length $\ell[j]$. This sequence is precisely the longest subsequence ending at $x_k$ followed by $x_j$. The appropriate definition for $p[j]$ is immediate.\footnote{We've so far argued that the updating is occuring only if a sequence of that length exists. We now only need to show that all longest sequences are considered.} This update method is exhaustive as the longest increasing subsequence ending at $x_j$ has a penultimate element at some $x_k$ and this case is considered by the inductive step. \\
+
+\noindent By finding the $\arg \max$ of $\ell$, we find the length of the longest subsequence as the subsequence must necessarily end at some $x_j$. By the update rules stated above, for $k = p[j]$, we see that $\ell[k] = \ell[j] - 1$ and $x_k < x_j$. Therefore, \emph{a} longest subsequence is the solution to the subproblem $k$ and $x_j$. The backtracking algorithm stated above, recursively finds the solution to the subproblme.\footnote{Backtracking is as complicated as you make it to be. All one needs to do is argue that the solution to the backtracked problem will help build recursively the solution to the problem at hand.} Reversing the subsequence produces it in the appropriate order.
+
+\noindent \textbf{Complexity.} The outer loop runs $n$ iterations and the inner loop runs at most $n$ iterations, with each iteration taking constant time. Backtracking takes at most $O(n)$ time as the longest subsequence is at most length $n$. The total complexity is therefore: $O(n^2)$.\footnote{Don't bother writing out tedious arithmetic that both of us know how to do.}
+
+
+
+
+
+
+
+
+
+
+\newpage
+\section{Runtime Complexity and Asymptotic Analysis}
+\subsection{Asymptotic Analysis}
+I'm sure all of you have read about Big O Notation in the past so the basic definition should be of no surprise to you. That definition you will find is sometimes a bit simplistic and in this class we are going to require more formalism to effectively describe the efficiency of our algorithms. \\
+
+\noindent Bear with me for a bit, as I'm going to delve into a lot of mathematical intuition but I promise you that it will be helpful! \\
+
+\noindent Let's form a \emph{partial} ordering on the set of function $\NN \rightarrow \RR^+$ (functions from natural numbers to positive reals). Let's say for $f, g : \NN \rightarrow \RR^+$, that $f \leq g$ if for all but finitely many $n$, $f(n) \leq g(n)$.\footnote{You might see this in the notation $\exists \ n_0 \in \NN$ such that for all $n > n_0$, $f(n) \leq g(n)$. These are in fact equivalent. If $f(n) \leq g(n)$ for all but finitely many $n$ (call them $n_1 \leq \cdots \leq n_m$) then for all $n > n_m$, $f(n) \leq g(n)$. Setting $n_0 = n_m$ completes this proof. For the other direction, let the set of finitely many $n$ for which it doesn't satisfy be the subset of $\{1, \ldots, n_0\}$ where $f(n) > g(n)$.} Formally this means the following:
+\begin{enumerate}[(a)]
+\item (reflexivity) $f \leq f$ for all $f$.
+\item (antisymmetry) If $f \leq g$ and $g \leq f$ then $f = g$.\footnote{Careful here! When we say $f = g$ we don't mean that $f$ and $g$ are equal in the traditional sense. We mean they are equal in the asymptotic sense. Formally this means that for all but finitely many $n$, $f(n) = g(n)$. For example, the functions $f(x) = x$ and $g(x) = \lceil \frac{x^2}{x + 10} \rceil$ are asymptotically equal.}
+\item (transitivity) If $f \leq g$ and $g \leq h$ then $f \leq h$ 
+\end{enumerate}
+What differentiates a partial ordering from a \emph{total} ordering is that there is no idea that $f$ and $g$ are comparable. It might be that $f \leq g$, $f \geq g$ or perhaps neither. In a total ordering, we guarantee that $f \leq g$, or $f \geq g$, perhaps both. \\
+
+\noindent Why is this important, you may rightfully ask. By defining this partial ordering, we've given ourselves the ability to define \emph{complexity equivalence classes}. 
+
+\begin{framed}
+\begin{defn}[Big O Notation]
+Let $f, g : \NN \rightarrow \RR^+$. We say $f \in O(g)$ and (equivalently) $g \in \Omega(f)$ if $f \leq c g$ for some $c > 0$. Here we use `$\leq$' as described previously.
+\end{defn}
+\end{framed}
+
+\noindent First recognize that $O(g)$ and $\Omega(f)$ are \emph{sets} of functions. Let's discuss equivalence classes and relations for a bit.
+
+\begin{defn}[Equivalence Relation]
+We say $\sim$ is an equivalence relation on a set $X$ if for any $x, y, z \in X$, $x \sim x$ (reflexivity), $x \sim y$ iff $y \sim x$ (symmetry), and if $x \sim y$ and $y \sim z$ then $x \sim z$.
+\end{defn}
+
+\noindent Our general definition for `=' fits very nicely into this definition for equivalence relations. But equivalence relations are more general than that. In fact they work with the definition of equality in a partial ordering above as well. Check this if you are unsure about it. Now, we can bring up the notation of an equivalence class.
+
+\begin{defn}[Equivalence Class]
+We call the set $\{ y \in X \st x \sim y \}$, the equivalence class of $x$ in $X$ and notate it by $[x]$.
+\end{defn}
+
+\noindent You might be asking yourself what does any of this have to do with runtime complexity? I'm getting to that. The point of all of these definitions about partial ordering and equivalence classes is that $f \in O(g)$ is a partial ordering as well! Go through the process of checking this as an exercise. 
+
+\begin{defn}
+We say $f \in \Theta(g)$ and (equivalently) $g \in \Theta(f)$ if $f \in O(g)$ and $g \in O(f)$.
+\end{defn}
+
+\noindent This means that $f \in \Theta(g)$ is an equivalence relation and in particular $\Theta(g)$ is an equivalence class. By now, perhaps you've gotten an intuition as to what this equivalence class means. It is the set of functions that have the same \emph{asymptotic computational complexity}. This means that asymptotically, their values only deviate from each by a linear factor. \\
+
+\noindent This is an incredibly powerful idea! We're now defined ourselves with the idea of equality that is suitable for this course. We are interested in asymptotic equivalence. If we're looking for a quadratic function, we're happy with finding any function in $\Theta(n^2)$. This doesn't mean per se that we don't care about linear factors, its just that its not the concern of this course. A lot of work in other areas of computer science focus on the linear factor. What we're interested in this course is how to design algorithms for problems that look exponentially hard but in reality might have polynomial time algorithms. That jump is far more important than a linear factor. \\
+
+\noindent We can also define $o, \omega$ notation. These are stronger relations. We used to require the existence of some $c > 0$. Now we require it to be true for all $c > 0$.
+
+\begin{defn}[Little O Notation]
+Let $f, g : \NN \rightarrow \RR^+$. We say $f \in o(g)$ and (equivalently) $g \in \omega(f)$ if $f \leq c g$ for all $c > 0$. Here we use `$\leq$' as described previously.
+\end{defn}
+
+\noindent We can also discuss asymptotic analysis for functions of more than one variable. I'll provide the definition here for Big O Notation but its pretty easy to see how the other definitions translate. 
+
+\begin{defn}[Multivariate Big O Notation]
+Let $f,g : \NN^k \rightarrow \RR^+$. We say $f \in O(g)$ and (equivalently) $g \in \Omega(f)$ if $f(x_1, \ldots, x_k) \leq c g(x_1, \ldots, x_k)$ for some $c > 0$ for all but finitely many tuples $(x_1, \ldots, x_k)$.\footnote{It really helps me to think of this graphically. Essentially, this definition is saying that the region for which $f \not \leq c g$ is bounded.}
+\end{defn}
+
+\noindent A word of warning. Asymptotic notation can be used incredibly abusively. For example you might see something written like $3 n^2 + 18n = O(n^2)$. In reality, $3 n^2 + 18n \in O(n^2)$. But the abusive notation can be helpful if we want to `add' or `multiply' big O notation terms. You might find this difficult at first so stick to more correct notations until you feel comfortable using more abusive notation.
+
+\subsection{Random Access Machines and the Word Model}
+Okay, so we've gotten through defining Big O Notation so now we need to go about understanding how to calculate runtime complexity. A perfectly reasonable question to ask is `what computer are we thinking about when calculating runtime complexity?'. A lot of you have taken courses on parallelization, for example. Are we allowed to use a parallel computing system here? These are all good questions and certainly things to be thinking about. However, for the intents of our class, we are not going to be looking at parallelization. We are going to assume a single threaded machine. \footnote{If you consider a multi threaded machine with $k$ threads, then any computation that takes time $t$ to run on the multithreaded machine takes at most $kt$ time to run on the single threaded machine. And conversely, any computation that takes time $t$ to run on the single threaded machine takes at most $t$ time to run on the multithreaded machine. If $k$ is a constant, this doesn't affect asymptotic runtime.} Is this a quantum machine? Also, interesting but in this case outside the scope of this course. \\
+
+\noindent The most general model we could use would be a single headed one tape Turing machine. Although equivalent in computation power, we know that this is not an efficient model particularly because the head will move around too much and this was incredibly inefficient. It was a perfectly reasonable model for us to use in CS 21 because the movement of the head can be argued to not cause more than a polynomial deviation in the complexity which was perfectly fine with us as we were really only concerned about the distinction of P and NP. \\
+
+\noindent To define a model for computation, we need to define the costs of each of the operations. We can start from the ground up and define the time to flip a bit, the time to move the head to a new bit to flip, etc. and build up our basic operations of addition, multiplication from there and then move on to more complicated operations and so forth. This we will quickly find becomes incredibly complicated and tedious. However, this is the only actual method of calculating the time of an algorithm. What we will end up using is a simplification, but one that we are content with. When you think about an algorithm's complexity, you must always remember what model you are thinking in. For example, I could define a model where sorting is a $O(1)$ operation. This wouldn't be a very good model but now you could solve the problem of finding the mode of a set in $O(n)$ time with $O(1)$ additional space. Luckily, the models we're going to use have some logical intuition behind them and you wouldn't have any such silly pitfalls. \\
+
+\noindent We are going to be using two different models in this class. The most common model we will be working in is the \emph{Random-Access Machine (RAM) model}. In this model, instructions are operated on sequentially with no concurrency. Furthermore, we can write as much as we want to the memory and the access of any part of the memory is done in constant time.\footnote{This is the motivation of the name Random-Access. A random bit of memory can be accessed in constant time. In a Turing machine only the adjacent bits of the tape can be accessed in constant time.} We further assume that reading and writing a single bit takes constant time. \\
+
+\noindent Recall that a $n$-bit integer can be stored using $O(\log n)$ bits. So addition, subtraction, and multiplication of $n$-bit integers na\"ively takes $O(\log n)$ time.\footnote{You can also think about this as adding $m$ bit integers takes $O(m)$ time. And you can store numbers as large as $2^m$ using $m$ bits.} This model is the most accurate because it most closely reflects how a computer works. \\
+
+\noindent However, as I said before this can get really messy. We will also make a simplification which we call the \emph{word model}. In the word model, we assume that all the words can be stored in $O(1)$ space. There are numerous intuitions behind the word model but the most obvious is how most programming languages allocate memory. When you allocate memory for an integer, languages usually allocate 32 bits (this varies language to language). These 32 bits allow you to store integers between $-2^{31}$ and $2^{31} - 1$. This is done irrespective of the size the integer. So, operations on these integers are irrespective of the length. \\
+
+\noindent This model is particularly useful if we want to consider the complexity of higher order operations. A good example is matrix multiplication. A na\"ive algorithm for matrix multiplication runs in $O(n^3)$ for the multiplication of two $n \times n$ matrices. By this we mean that the number of multiplication and addition operations applied on the elements of the matrices is $O(n^3)$.\footnote{Later we will show how to get this down to $O(n^{\log_2 7})$.} The complexity of the multiplication of the elements is to relevant to the matrix multiplication algorithm itself and can be factored in later. \\
+
+\noindent For the most part, you will be able to pick up on whether the RAM model or the Word model should be used. In the example in the previous chapter, we used the Word model. Why? Because, the problem gave no specification as to the size of the elements $x_1, \ldots, x_n$. If specified, then it implies the RAM model. In situations where this is confusing, we will do the best to clarify which model the problem should be solved in. If in doubt, ask a TA.
+
+
+
+
+
+
+
+\newpage
+\section{Recursion}
+
+\begin{defn}[Recursive Algorithm]
+A recursive algorithm is any algorithm whose answer is dependent on running the algorithm with `simpler' values, except for the `simplest' values for which the value is known trivially.\footnote{By simpler, I don't necessarily mean smaller. It could very well be that $f(t)$ is dependent on $f(t + 1)$ but $f(T)$ for some large $T$ is a known base case.}
+\end{defn}
+
+\noindent The idea of a recursive algorithm probably isn't foreign to you. In this class, we will be looking at two different `styles' of recursive algorithms: Dynamic Programming and Divide-and-Conquer algorithms. Let's take a look a look at a more basic recursive algorithm to start off. We will also introduce the notion of \emph{duality} along the way.
+
+\begin{defn}[Greatest Common Divisor]
+For integers $a, b$ not both $0$, let $\mathrm{DIVS}(a,b)$ be the set of positive integers dividing both $a$ and $b$. The greatest common divisor of $a$ and $b$ noted $\gcd(a,b) = \max \{\mathrm{DIVS}(a,b)\}$. 
+\end{defn}
+
+\noindent Let's start by creating a na\"ive algorithm for the gcd problem.\footnote{This is generally a good practice to follow especially in interview questions at companies. Start by stating a na\"ive algorithm, state its faults and how you could go about improving it.} We know that trivially $\gcd(a,b) \leq a$ and $\gcd(a,b) \leq b$ or equivalently $\gcd(a,b) \leq \min(a,b)$. A na\"ive algorithm could be to check all values $1, \ldots, \min(a,b)$ to see if they divide both $a$ and $b$. This will have runtime $O(\min(a,b))$ assuming the word model. \\
+
+\noindent We checked a lot of cases here, but under closer observation a lot of the checks were redundant. For example, if we showed that 5 didn't divide either $a$ or $b$, then we know that none of $10, 15, 20, \ldots$ divide them either. Let's explore how we can exploit this observation.
+
+\begin{lem}
+For integers $a, b$, not both $0$, $\mathrm{DIVS}(a,b) = \mathrm{DIVS}(b,a)$ (reflexivity), and $\mathrm{DIVS}(a,b) = \mathrm{DIVS}(a+b,b)$.
+\end{lem}
+
+\begin{proof}
+Reflexivity is trivial by definition. If $x \in \mathrm{DIVS}(a,b)$ then $\exists \ y, z$ integers such that $xy = a, xz = b$. Therefore, $x(y + z) = a + b$, proving $x \in \mathrm{DIVS}(a+b,b)$. Conversely, if $x' \in \mathrm{DIVS}(a+b,b)$ then $\exists \ y', z'$ integers such that $x' y' = a + b, x' z' = b$. Therefore, $x' (y ' - z') = a$ proving $x' \in \mathrm{DIVS}(a,b)$. Therefore, $\mathrm{DIVS}(a,b) = \mathrm{DIVS}(a+b,b)$. \qed
+\end{proof}
+
+\begin{cor}
+For integers $a, b$, not both $0$, $\mathrm{DIVS}(a,b) = \mathrm{DIVS}(a + kb, b)$ for $k \in \ZZ$, and therefore $\gcd(a,b) = \gcd(a + kb, b)$. 
+\end{cor}
+
+\begin{proof}
+Apply induction. The gcd argument follows at is the max element of the same set. \qed
+\end{proof}
+
+
+
+\newpage
+\section{Dynamic Programming}
+
+\newpage
+\section{Greedy Algorithms}
+
+\newpage
+\section{Graph Algorithms}
+
+\newpage
+\section{Branch and Bound}
+
+\newpage
+\section{Divide and Conquer}
+
+\newpage
+\section{Multiplicative Weights Algorithm}
+
+\newpage
+\section{Max-Flow Min-Cut}
+
+\newpage
+\section{Dynamic Programming}
+
+\end{document}
