@@ -27,13 +27,15 @@
 \newtheorem{lem}[thm]{Lemma}
 \newtheorem{prop}[thm]{Proposition}
 \newtheorem{cor}[thm]{Corollary}
-\newtheorem{exer}[thm]{Exercise}
 
+\theoremstyle{definition}
 \newtheorem{defn}[thm]{Definition} % definition numbers are dependent on theorem numbers
 \newtheorem{conj}[thm]{Conjecture}
 \newtheorem{claim}[thm]{Claim}
 \newtheorem{nota}[thm]{Notation}
 \newtheorem{exmp}[thm]{Example} % same for example numbers
+\newtheorem{alg}[thm]{Algorithm}
+\newtheorem{exer}[thm]{Exercise}
 
 \newcommand\diff{\mathrm{d}}
 \newcommand{\borel}{\mathfrak{B}}
@@ -154,15 +156,16 @@
 \newpage
 
 \section{Preface}
-These notes are intended to be supplementary material to go along with the lectures for CS 38 as taught at Caltech in Spring of 2016. They in no means replace the content in the lectures and recitation sections of the course, and I highly encourage you attend them. I encourage you to read these lecture notes prior to class as a method of quickly reviewing the material for the course. \\
-
 \noindent I took this course in the spring of 2015 and was a TA for the course in 2016. I wrote these notes as an extension of most of the recitations I gave during the year and in particular tried to emphasize how to write proofs effectively and concisely. The first couple chapters will have plenty of examples of fully written proofs for algorithms and you should use these as templates for writing your solution sets. The later chapters will relax this slightly; I will be more succinct and might omit certain parts of the proof as exercises for you the reader. There is a lot of additional information that I have included in the footnotes; I highly encourage you to read them as some of them are tangential musings while others actual carry rather pertinent information to the subject. \\
 
 \noindent A word of warning, however. I go into a lot of detail about the mathematics (as it interests me). I've tried to make it as accessible as possible by adding definitions for mathematical concepts as well as the intuition behind some of these definitions. However, if you are lost, Wikipedia is a good source for these definitions. \\
 
 \noindent I hope you enjoy this course as much as I did and feel free to ask me or any of the TAs questions. If you spot errors in these notes please let me know right away as I guarantee you that there will be plenty. I had a great time writing these notes and as I wrote them, I realized there was so much I hadn't understood the first and second times looking at this course. Please also take your own notes, but hopefully these will help you through this course. \\
 
+\noindent Lastly, a word about the structure of the course. When these notes were written, the course was 40\% homework, 20\% midterm, 40\% final. That meant over the 7-8 sets, each problem on a set was worth about 1\% of your grade. This is not something worth losing sleep over! Its far more important to get a deep conceptual understanding of the material. Most importantly, this was noticeable in the two exams. The exams will test you on slightly different things than the sets. While each set will generally introduce 1-2 new algorithm topics and test you on them, the exams will test you on all the topics till that date and in particular will test you on your ability to look at a problem and quickly figure out what type of algorithm it is looking for. More often that not, students spend too long on a problem on the exam trying to find an algorithm of the wrong type. \\
+
 \noindent --Chinmay
+
 
 \newpage
 
@@ -325,7 +328,7 @@ Okay, so we've gotten through defining Big O Notation so now we need to go about
 
 \noindent However, as I said before this can get really messy. We will also make a simplification which we call the \emph{word model}. In the word model, we assume that all the words can be stored in $O(1)$ space. There are numerous intuitions behind the word model but the most obvious is how most programming languages allocate memory. When you allocate memory for an integer, languages usually allocate 32 bits (this varies language to language). These 32 bits allow you to store integers between $-2^{31}$ and $2^{31} - 1$. This is done irrespective of the size the integer. So, operations on these integers are irrespective of the length. \\
 
-\noindent This model is particularly useful if we want to consider the complexity of higher order operations. A good example is matrix multiplication. A na\"ive algorithm for matrix multiplication runs in $O(n^3)$ for the multiplication of two $n \times n$ matrices. By this we mean that the number of multiplication and addition operations applied on the elements of the matrices is $O(n^3)$.\footnote{Later we will show how to get this down to $O(n^{\log_2 7})$.} The complexity of the multiplication of the elements is to relevant to the matrix multiplication algorithm itself and can be factored in later. \\
+\noindent This model is particularly useful if we want to consider the complexity of higher order operations. A good example is matrix multiplication. A na\"ive algorithm for matrix multiplication runs in $O(n^3)$ for the multiplication of two $n \times n$ matrices. By this we mean that the number of multiplication and addition operations applied on the elements of the matrices is $O(n^3)$.\footnote{Later we will show how to get this down to $O(n^{\log_2 7})$.} The complexity of the multiplication of the elements isn't directly relevant to the matrix multiplication algorithm itself and can be factored in later. \\
 
 \noindent For the most part, you will be able to pick up on whether the RAM model or the Word model should be used. In the example in the previous chapter, we used the Word model. Why? Because, the problem gave no specification as to the size of the elements $x_1, \ldots, x_n$. If specified, then it implies the RAM model. In situations where this is confusing, we will do the best to clarify which model the problem should be solved in. If in doubt, ask a TA.
 
@@ -336,7 +339,9 @@ Okay, so we've gotten through defining Big O Notation so now we need to go about
 
 
 \newpage
-\section{Recursion}
+\section{The GCD Algorithm}
+
+\subsection{Recursion}
 
 \begin{defn}[Recursive Algorithm]
 A recursive algorithm is any algorithm whose answer is dependent on running the algorithm with `simpler' values, except for the `simplest' values for which the value is known trivially.\footnote{By simpler, I don't necessarily mean smaller. It could very well be that $f(t)$ is dependent on $f(t + 1)$ but $f(T)$ for some large $T$ is a known base case.}
@@ -357,7 +362,7 @@ For integers $a, b$, not both $0$, $\mathrm{DIVS}(a,b) = \mathrm{DIVS}(b,a)$ (re
 \end{lem}
 
 \begin{proof}
-Reflexivity is trivial by definition. If $x \in \mathrm{DIVS}(a,b)$ then $\exists \ y, z$ integers such that $xy = a, xz = b$. Therefore, $x(y + z) = a + b$, proving $x \in \mathrm{DIVS}(a+b,b)$. Conversely, if $x' \in \mathrm{DIVS}(a+b,b)$ then $\exists \ y', z'$ integers such that $x' y' = a + b, x' z' = b$. Therefore, $x' (y ' - z') = a$ proving $x' \in \mathrm{DIVS}(a,b)$. Therefore, $\mathrm{DIVS}(a,b) = \mathrm{DIVS}(a+b,b)$. \qed
+Reflexivity is trivial by definition. If $x \in \mathrm{DIVS}(a,b)$ then $\exists \ y, z$ integers such that $xy = a, xz = b$. Therefore, $x(y + z) = a + b$, proving $x \in \mathrm{DIVS}(a+b,b)$. Conversely, if $x' \in \mathrm{DIVS}(a+b,b)$ then $\exists \ y', z'$ integers such that $x' y' = a + b, x' z' = b$. Therefore, $x' (y ' - z') = a$ proving $x' \in \mathrm{DIVS}(a,b)$. Therefore, $\mathrm{DIVS}(a,b) = \mathrm{DIVS}(a+b,b)$.
 \end{proof}
 
 \begin{cor}
@@ -365,13 +370,91 @@ For integers $a, b$, not both $0$, $\mathrm{DIVS}(a,b) = \mathrm{DIVS}(a + kb, b
 \end{cor}
 
 \begin{proof}
-Apply induction. The gcd argument follows at is the max element of the same set. \qed
+Apply induction. The gcd argument follows at is the max element of the same set.
 \end{proof}
 
+\noindent Let's make a stronger statement. Recall that one way to think about $a \pmod b$ is the unique number in $\{0, \ldots, b\}$ that is equal to $a + kb$ for some $k \in \ZZ$.\footnote{The more `mathy' way of thinking about $a \pmod b$ is as the conjugacy class of $a$ when we consider the equivalence relation $x \sim y$ if $x  - y$ is a multiple of $b$. This forms a group known as $\ZZ / b \ZZ$. Addition is defined on the conjugacy classes as a consequence of addition on any pair of elements in the conjugacy classes permuting the classes. Read any Abstract Algebra textbook for more information.} Therefore, the following corollary also holds.
 
+\begin{cor}
+For integers $a, b$, not both $0$, $\gcd(a,b) = \gcd(a \pmod b, b)$.
+\end{cor}
+
+\noindent This simple fact is going to take us home. We've found a way to recursively reduce the larger of the two inputs (wlog \footnote{without loss of generality.} assume $a$) to strictly less than $b$. Because it's strictly less than $b$, we know that this repetitive recursion will actually terminate. By terminate, we mean that we will reach a base case that we know the solution of. In this case, let's assume our base case is na\"ively that $\gcd(a,0) = a \ \forall \ a$. Just for the sake of formality, I've stated this as an algorithm below:\\
+
+\begin{alg}[Euclid-Lam\'e]
+Given integer inputs inputs $a, b$ with $a \geq b$, if $b = 0$ then return $a$. Otherwise, return the $\gcd(b, a \pmod b)$ calculated recursively.\footnote{I write it as $\gcd(b, a \pmod b)$ instead of $\gcd(a \pmod b, b)$ here to insure that the first argument is strictly larger than the second.}
+\end{alg}
+
+\noindent To state correctness, its easiest to just cite the previous corollary and argue that as the input's strictly decrease we will eventually reach a base case. A truly great proof would also say something about negative inputs and why this case isn't to be worried about (hint $\gcd(a,b) = \gcd(a, -b)$). \\
+
+\noindent How do you go about arguing complexity? In most cases its pretty simple but this problem is a little bit trickier. Recall the Fibonacci numbers $F_1 = 1, F_2 = 1$ and $F_k = F_{k-1} + F_{k-2}$ for $k > 2$. I'm going to assume that you have remembered the proof from Ma/CS 6a (using generating functions) that:
+\begin{equation}
+F_k = \frac{1}{\sqrt{5}} \phi^k - \frac{1}{\sqrt{5}} {\phi'}^k
+\label{eq:4-fib}
+\end{equation}
+where $\phi, \phi'$ are the two roots of $x^2 = x + 1$ ($\phi$ is the larger root, a.k.a the golden ratio). Note that $\abs{\phi'} < 1$ so $F_k$ tends to $\phi^k / \sqrt{5}$. More importantly, it grows exponentially. \\
+
+\noindent Most times, you're complexity argument will be the smallest argument. Let's make the following Theorem about the complexity:
+
+\begin{thm}
+If $0 < b \leq a$, and $b < F_{k+2}$ then the Euclid-Lam\'e algorithm makes at most $k$ recursive calls.
+\end{thm}
+
+\begin{proof}
+This is a proof by induction. Check for $k < 2$ by hand. Now, if $k \geq 2$ then recall that the recursive call is for $\gcd(b, c)$ where we define $c := a \pmod  b$. Now there are two cases to consider. The first is easy: If $c < F_{k + 1}$ then by induction at most $k-1$ recursive calls from here so total at most $k$ calls. \checkmark In the second case: $c \geq F_{k+1}$. One more function call gives us $\gcd(c, b \pmod c)$. First, recall that there's a strict inequality among the terms in a recursive $\gcd$ call (proven previously). So $b > c$. Therefore, $b > b \pmod c$ as $c > b \pmod c$. In particular we have strict inequality, so $b \geq (b \pmod c) + c$ or equivalently $b \pmod c \leq b - c$. Then apply the bounds on $b,c$ to get
+\begin{equation}
+b \pmod c \leq b - c \leq b - F_{k + 1} < F_{k+2} - F_{k+1} = F_k
+\end{equation}
+So in two calls, we get to a position from where inductively we make at most $k-2$ calls, so total at most $k$ calls as well. 
+\end{proof}
+
+\noindent The theorem tells us that Euclid-Lam\'e for $\gcd(a, b)$ makes $O(\log(\min(a,b)))$ recursive calls in the word model. I'll leave it as a nice exercise to finish this last bit. \\
+
+\subsection{Duality}
+
+\noindent Incidentally, this isn't the only problem that benefits from this recursive structure of looking at modular terms. We're going to look at a \emph{dual} problem that shares the same structure. Formally for optimization problems,
+
+\begin{defn}[Duality]
+A minimization problem $\mathcal{D}$ is considered the \emph{dual} of a maximization problem $\mathcal{P}$ is the solution of $\mathcal{D}$ provides an upper bound for the solution of $\mathcal{D}$. This is referred to as \emph{weak duality}. If the solutions of the two problems are equal, this is called \emph{strong duality}.
+\end{defn}
+
+\noindent Define $\mathrm{SUMS}(a,b)$ as the set of positive integers of the form $xa + yb$ for $x, y \in \ZZ$. With a little effort one can prove that like $\mathrm{DIVS}$, the following properties hold for $\mathrm{SUMS}$.
+
+\begin{lem}
+For integers $a,b$, not both $0$, $\mathrm{SUMS}(a,b) = \mathrm{SUMS}(a + kb, b)$ for any $k \in \ZZ$, and therefore $\mathrm{SUMS}(a,b) = \mathrm{SUMS}(a \pmod b, b)$. 
+\end{lem}
+
+\noindent It shouldn't be surprising then in fact there is a duality structure here. I formalize it below:
+
+\begin{thm}[Strong Dual of GCD]
+For integers $a, b$, not both 0, $\min \{\mathrm{SUMS}(a,b) \} = \max \{ \mathrm{DIVS}(a,b)\} = \gcd(a,b)$.
+\end{thm}
+
+\begin{proof}
+Its easy to see as $\gcd(a,b)$ divides $a$ and $b$ then it divides any $ax + yb$ proving weak duality. For strong duality, assume for contradiction, that there exists $(a,b)$ such that $a + b$ is the smallest.\footnote{This is a very common proof style and one we will see again in greedy algorithms. We assume that we have a smallest instance of a contradiction and argue a smaller instance of contraction. Here we define smallest by the magnitude of $a + b$.} But then the pair $(b, a - b)$ yields the same set of $\mathrm{SUMS}$ however, $b + (a - b) = b < a + b$, a contradiction.
+\end{proof}
 
 \newpage
 \section{Dynamic Programming}
+
+Before you get some alternate idea, let me state it that \emph{Dynamic Programming is a form of recursion}. In Computer Science, you have probably heard the tradeoff between Time and Space. This has nothing to do with General relativity, but has to do with the trade off between the space complexity on the memory and the time complexity of the algorithm\footnote{I actual prefer to think about this as a 3-way tradeoff between time complexity, space complexity, and correctness. This has lead to the introduction of the vast field of randomized and probabilistic algorithms, which are correct in expectation and have small variance. But that is for other classes particularly CS 139 and CS 150.}. The way I like to think about Dynamic Programming is that we're going to exploit the tradeoff by utilizing the memory to give us a speed advantage when looking at recursion problems. \\
+
+\noindent Not all recursion problems have such a structure. For example the GCD problem from the previous chapter does not. We will see more examples that don't have a Dynamic Programming structure. Here are the properties, you should be looking for when seeing if a problem can be solved with Dynamic Programming.
+
+\subsection{Principal Properties}
+
+\begin{framed}
+\noindent \textbf{Principal Properties of Dynamic Programming.} Almost all Dynamic Programming problems have these two properties:
+\begin{enumerate}
+\item Optimal substructure: The optimal value of the problem can easily be obtained given the optimal values of subproblems. In other words, there is a recursive algorithm for the problem, which would be fast if we could just skip the recursive steps.
+\item Overlapping subproblems: The subproblems share sub-subproblems. In other words, if you actually ran that na{\"i}ve recursive algorithm, it would waste a lot of time solving the same problems over and over again.
+\end{enumerate}
+\end{framed}
+
+\noindent In other words, your algorithm trying to calculate $f(x)$ might recursively call $f(y)$ many times. It will be therefore, more efficient to store the value of $f(y)$ and recall it rather than calculating it again and again. I know that's confusing, so lets look at a couple examples to clear it up. 
+
+\subsection{Tribonacci Numbers, an example}
+\noindent I'll introduce computing `tribonacci' numbers as a preliminary example\footnote{The easiest example is Fibonacci numbers but as I've given you the explicit formula in the previous chapter, it seems moot. Although this problem is also rather easily solvable with recurrence relations, but bear with me.} The tribonacci numbers are defined by $T_0 = 1, T_1 = 1, T_2 = 1$ and $T_k = T_{k_1} + T_{k-2} + T_{k - 3}$ for $k \geq 3$.
 
 \newpage
 \section{Greedy Algorithms}
