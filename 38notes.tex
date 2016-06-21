@@ -243,7 +243,7 @@ Given an array of integers $x_1, \ldots, x_n$, find the \emph{longest increasing
 
 \noindent \textbf{Proof of Correctness.} First, we'll argue that the two arrays are filled correctly. Its trivial to see that the case of $j = 1$ is filled correctly. By induction on $k$, when $\ell[j]$ is updated, there is some increasing subsequence which ends at $x_j$ and has length $\ell[j]$. This sequence is precisely the longest subsequence ending at $x_k$ followed by $x_j$. The appropriate definition for $p[j]$ is immediate.\footnote{We've so far argued that the updating is occuring only if a sequence of that length exists. We now only need to show that all longest sequences are considered.} This update method is exhaustive as the longest increasing subsequence ending at $x_j$ has a penultimate element at some $x_k$ and this case is considered by the inductive step. \\
 
-\noindent By finding the $\arg \max$ of $\ell$, we find the length of the longest subsequence as the subsequence must necessarily end at some $x_j$. By the update rules stated above, for $k = p[j]$, we see that $\ell[k] = \ell[j] - 1$ and $x_k < x_j$. Therefore, \emph{a} longest subsequence is the solution to the subproblem $k$ and $x_j$. The backtracking algorithm stated above, recursively finds the solution to the subproblme.\footnote{Backtracking is as complicated as you make it to be. All one needs to do is argue that the solution to the backtracked problem will help build recursively the solution to the problem at hand.} Reversing the subsequence produces it in the appropriate order.
+\noindent By finding the $\arg \max$ of $\ell$, we find the length of the longest subsequence as the subsequence must necessarily end at some $x_j$. By the update rules stated above, for $k = p[j]$, we see that $\ell[k] = \ell[j] - 1$ and $x_k < x_j$. Therefore, \emph{a} longest subsequence is the solution to the subproblem $k$ and $x_j$. The backtracking algorithm stated above, recursively finds the solution to the subproblme.\footnote{Backtracking is as complicated as you make it to be. All one needs to do is argue that the solution to the backtracked problem will help build recursively the solution to the problem at hand.} Reversing the subsequence produces it in the appropriate order. \\
 
 \noindent \textbf{Complexity.} The outer loop runs $n$ iterations and the inner loop runs at most $n$ iterations, with each iteration taking constant time. Backtracking takes at most $O(n)$ time as the longest subsequence is at most length $n$. The total complexity is therefore: $O(n^2)$.\footnote{Don't bother writing out tedious arithmetic that both of us know how to do.}
 
@@ -414,9 +414,11 @@ So in two calls, we get to a position from where inductively we make at most $k-
 
 \noindent Incidentally, this isn't the only problem that benefits from this recursive structure of looking at modular terms. We're going to look at a \emph{dual} problem that shares the same structure. Formally for optimization problems,
 
+\begin{framed}
 \begin{defn}[Duality]
 A minimization problem $\mathcal{D}$ is considered the \emph{dual} of a maximization problem $\mathcal{P}$ is the solution of $\mathcal{D}$ provides an upper bound for the solution of $\mathcal{D}$. This is referred to as \emph{weak duality}. If the solutions of the two problems are equal, this is called \emph{strong duality}.
 \end{defn}
+\end{framed}
 
 \noindent Define $\mathrm{SUMS}(a,b)$ as the set of positive integers of the form $xa + yb$ for $x, y \in \ZZ$. With a little effort one can prove that like $\mathrm{DIVS}$, the following properties hold for $\mathrm{SUMS}$.
 
@@ -427,7 +429,10 @@ For integers $a,b$, not both $0$, $\mathrm{SUMS}(a,b) = \mathrm{SUMS}(a + kb, b)
 \noindent It shouldn't be surprising then in fact there is a duality structure here. I formalize it below:
 
 \begin{thm}[Strong Dual of GCD]
-For integers $a, b$, not both 0, $\min \{\mathrm{SUMS}(a,b) \} = \max \{ \mathrm{DIVS}(a,b)\} = \gcd(a,b)$.
+For integers $a, b$, not both 0, 
+\begin{equation}
+\min \{\mathrm{SUMS}(a,b) \} = \max \{ \mathrm{DIVS}(a,b)\} = \gcd(a,b)
+\end{equation}
 \end{thm}
 
 \begin{proof}
