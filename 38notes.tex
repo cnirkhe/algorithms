@@ -13,6 +13,7 @@
 
 \usepackage{enumerate}
 \usepackage{rotating}
+\usepackage{multirow}
 
 \usepackage{tikz}
 \usepackage{pgfplots}
@@ -66,6 +67,7 @@
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\NNN}{\mathcal{N}}
 \newcommand{\OO}{\mathcal{O}}
+\newcommand{\One}[1]{\mathds{1}_{\{ #1 \}}}
 \newcommand{\OPT}{\textbf{OPT}}
 \newcommand{\QQ}{\mathbb{Q}}
 \newcommand{\RR}{\mathbb{R}}
@@ -174,6 +176,8 @@
 \noindent About the structure of the course. When these notes were written, the course was 40\% homework, 20\% midterm, 40\% final. That meant over the 7-8 sets, each problem on a set was worth about 1\% of your grade. This is not something worth losing sleep over! Its far more important to get a deep conceptual understanding of the material. Most importantly, this was noticeable in the two exams. The exams will test you on slightly different things than the sets. While each set will generally introduce 1-2 new algorithm topics and test you on them, the exams will test you on all the topics till that date and in particular will test you on your ability to look at a problem and quickly figure out what type of algorithm it is looking for. More often that not, students spend too long on a problem on the exam trying to find an algorithm of the wrong type. \\
 
 \noindent I hope you enjoy this course as much as I did and feel free to ask me any questions. If you spot errors in these notes please let me know right away as I guarantee you that there will be plenty. I had a great time writing these notes and as I wrote them, I realized there was so much I hadn't understood the first and second times looking at this course! \\
+
+\noindent Additionally, a lot of this was copied from previous CS 38 notes written by Leonard Schulman, William Hoza, Nicholas Schiefer, and many others. Thank you! \\
 
 \noindent --Chinmay Nirkhe, \href{mailto:cnirkhe@gmail.com}{cnirkhe@gmail.com}
 
@@ -448,6 +452,9 @@ For integers $a, b$, not both 0,
 Its easy to see as $\gcd(a,b)$ divides $a$ and $b$ then it divides any $ax + yb$ proving weak duality. For strong duality, assume for contradiction, that there exists $(a,b)$ such that $a + b$ is the smallest.\footnote{This is a very common proof style and one we will see again in greedy algorithms. We assume that we have a smallest instance of a contradiction and argue a smaller instance of contraction. Here we define smallest by the magnitude of $a + b$.} But then the pair $(b, a - b)$ yields the same set of $\mathrm{SUMS}$ however, $b + (a - b) = b < a + b$, a contradiction.
 \end{proof}
 
+\subsection{Repeated Squaring Trick}
+% TODO
+
 \newpage
 \section{Dynamic Programming}
 
@@ -475,7 +482,7 @@ Before you get some alternate idea, let me state it that \emph{Dynamic Programmi
 \begin{alg}[Tribonacci Numbers]
 Initialize a table $t[j]$ of size $k$. Fill in $t[0] \leftarrow 1, t[1] \leftarrow 1, t[2] \leftarrow 1$. For $2 \leq j \leq k$, sequentially, fill in $T[j] \leftarrow t[j-1] + t[j-2] + t[j-3]$. Return the value in $t[k]$. \\
 
-\noindent \textit{Proof of Correctness}. We proceed by induction to argue $t[j] = T_j$. Trivially, the base cases are correct and by the equivalence of definition of $t[j]$ and $T_j$, each $t[j]$ is filled correctly.\footnote{Not all proofs of correctness will be this easy, but not will be too much more complicated. State what each element of the table should equal and argue its correctness.} Therefore, $t[k] = T_k$. \\
+\noindent \textit{Proof of Correctness}. We proceed by induction to argue $t[j] = T_j$. Trivially, the base cases are correct and by the equivalence of definition of $t[j]$ and $T_j$, each $t[j]$ is filled correctly.\footnote{Not all proofs of correctness will be this easy, however, they won't be much more complicated either. Aim for 1-2 solid paragraphs. State what each element of the table should equal and argue its correctness.} Therefore, $t[k] = T_k$. \\
 
 \noindent \textit{Complexity.} Calculation of each $T[j]$ is constant given the previously filled values. As $O(k)$ such values are calculated, the total complexity is $O(k)$.\footnote{In one of the recitations, we will show how Fibonacci (also same complexity) can actually be run faster than $O(k)$ using repeated squaring.}
 \end{alg}
@@ -484,11 +491,11 @@ Initialize a table $t[j]$ of size $k$. Fill in $t[0] \leftarrow 1, t[1] \leftarr
 
 \subsection{Generic Algorithm and Runtime Analysis}
 When you have such a problem on your hands, the generic DP algorithm proceeds as follows:
+\begin{framed}
 \begin{alg}[Generic Dynamic Programming Algorithm]
 For any problem,
 \begin{enumerate}
-\item Iterate through all subproblems, starting from the ``smallest'' and building up to the ``biggest.''\footnote{It's not necessary for ``smallest'' and ``biggest'' to refer to literal size. All that matters is that when the algorithm comes to a subproblem, it should be ready for it, i.e. it should already have solved the sub-subproblems that are useful for solving that subproblem.
-} For each one:
+\item Iterate through all subproblems, starting from the ``smallest'' and building up to the ``biggest.'' For each one:
 \begin{enumerate}
 \item Find the optimal value, using the previously-computed optimal values to smaller subproblems.
 \item Record the choices made to obtain this optimal value. (If many smaller subproblems were considered as candidates, record which one was chosen.)
@@ -496,21 +503,237 @@ For any problem,
 \item At this point, we have the \emph{value} of the optimal solution to this optimization problem (the length of the shortest edit sequence between two strings, the number of activities that can be scheduled, etc.) but we don't have the actual solution itself (the edit sequence, the set of chosen activities, etc.) Go back and use the recorded information to actually reconstruct the optimal solution.
 \end{enumerate}
 \end{alg}
+\end{framed}
+\noindent It's not necessary for ``smallest'' and ``biggest'' to refer to literal size. All that matters is that when the algorithm comes to a subproblem, it should be ready for it, i.e. it should already have solved the sub-subproblems that are useful for solving that subproblem.
+
 
 \noindent The basic formula for the runtime of a DP algorithm is
+\begin{framed}
 \[
 \text{Runtime} = (\text{Total number of subproblems}) \times \left(\begin{array}{c}\text{Time it takes to solve problems} \\ \text{given solutions to subproblems.}\end{array}\right)
 \]
+\end{framed}
 (Warning: sometimes, a more nuanced analysis is needed.)
 
+\subsection{Edit Distance, an example}
+Now might be a good time and go back to Chapter 2 and read the example problem there if you haven't done so already. 
+
+\begin{defn}[Edit Distance]
+For a given alphabet $\Sigma$, an \emph{edit operation} of a string is an insertion or a deletion of a single character. The \emph{edit distance}\footnote{This is a actually a metric distance which we define when talking about clustering and packing.} is the minimum number of edit operations required to convert a string $X = (x_1 \ldots x_m)$ to $Y = (y_1 \ldots y_n)$.
+\end{defn}
+
+\noindent For example, the edit distance between the words `car' and `fair' is 3: `car $\rightarrow$ `cair' $\rightarrow$ `air' $\rightarrow$ `fair'. Note the \emph{edit path} here is not unique. The problem is to calculate the edit distance in the shortest time. \\
+
+\noindent The idea for dynamic programming is to somehow recursively break the problem into smaller cases. For convenience of notation, I'm going to write $X_k$ to mean $(x_1 \ldots x_k)$ (the substring) and similarly $Y_\ell = (y_1 \ldots y_\ell)$. The intuition here is the problem of edit distance for $X = X_m$ and $Y = Y_n$ can be broken down into a problem about edit distance of substrings. Formally let $d(k,\ell)$ be the edit distance between $X_k$ and $Y_\ell$. (Our final goal is to calculate $d(m,n)$ then.)\\
+
+\noindent Let's consider what happens to the last character of $X_k$ when calculating $d(k,\ell)$. One of 3 things happens:
+\begin{enumerate}[(a)]
+\item It is deleted. In which case the distance is equal to $1 + d(k-1,\ell)$.
+\item It remains in $Y$, but is no longer the right most character. In which case the distance is $1 + d(k, \ell-1)$.
+\item It equals the last character of $Y$, and so it remains the right most character of $Y$. In which case the distance is equal to $d(k-1,\ell-1)$.
+\end{enumerate}
+
+\noindent Now, we don't know which of these 3 cases is going to occur. However, we do know that at least 1 of them must be true. Therefore, we can say that the distance is the minimum of these 3 values. Formally, we write this as:
+
+\begin{equation}
+d(k,\ell) \leftarrow \min \begin{cases} d(k, \ell - 1) + 1\\ d(k - 1, \ell) \\ d(k-1, \ell - 1) + 2 \cdot \One{x_k \neq y_\ell} \end{cases}
+\end{equation} 
+Here $\One{\cdot}$ is the indicator function; it equals 1 if the inside statement is true, and 0 otherwise. Therefore, its saying that the distance is 2 if they are not equal (because you'd have to add $y_\ell$ and remove $x_k$) and 0 if they are equal (no change required). \\
+
+\noindent The base cases for our problem are $d(k,0) = k$ and $d(0,\ell) = \ell$ (insert or remove all the characters). This gives us all the intuition to formalize our dynamic programming algorithm:
+
+\begin{alg}[Edit Distance]
+Generate a table of size $m \times n$ indexed as $t[k,j]$. 
+\end{alg}
+
+\subsection{Memoization vs Bottom-Up}
+%TODO
+
 \subsection{$k$-Clustering, an example}
-Now might be a good time and go back to Chapter 2 and read the full Dynamic Programming Example. A classic Dynamic Programming problem is that of $k$-Clustering.
+A classic Dynamic Programming problem is that of $k$-Clustering, our next example.
+%TODO
+
+\subsection{How exactly hard is NP-Hard?}
+
+\subsection{Knapsack, an example}
+
+\subsection{Trellis Codes, an example}
+
+\subsection{SAT Solves and Resolution Proofs, an example}
+
+\subsection{Traveling Salesman Problem, an example}
+
+\subsection{Additional Example: Box Stacking}
+
+\paragraph{Problem} Given a collection of $n$ 3D boxes of integer dimensions $\{b_1, \ldots, b_n\}$ where $b_i = (\ell_i, w_i, h_i)$, calculate the height of the tallest stack of boxes you can form under the following constraints: A box cannot be rotated\footnote{Additional exercise: solve this problem where rotation is allowed. You can still come up an algorithm of the same complexity.} and a box $b_i$ can only be stacked on $b_j$ if the base of $b_i$ fits completely within the base of $b_j$.
+
+\paragraph{Algorithm Idea} Sort all the boxes by base area ($\ell_i \times w_i$). Clearly a box of smaller base area cannot fit below a larger. Let $m(i)$ be the height of the tallest stack of boxes with box $b_i$ at the top. Here is a recursive definition for $m(i)$:
+\begin{equation}
+m(i) = \max \left\{ h_i, \max_{\substack{j > i : \\w_i \leq w_j, \ell_i \leq l_j }} \{ m(j) + h_i \} \right\}
+\end{equation}
+Why is this the definition? We consider all possible blocks $b_j$ that could be directly below $b_i$ in the stack and then maximize recursively to get the maximum stack height. Because of the sorting, no block $b_j$ with $j < i$ can fit below block $b_i$.
+
+\paragraph{Algorithm Description} Sort the boxes by base area so that $b_1$ has the least base area. Create a table $t$ of size $n$ indexed by $1 \leq i \leq n$. Starting with $i = n$ to $1$, define $t[i]$ by,
+\begin{equation}
+t[i] \leftarrow \max \left\{ h_i, \max_{\substack{j > i : \\w_i \leq w_j, \ell_i \leq l_j }} \{ t[j] + h_i \} \right\}
+\end{equation}
+Return the following value:
+\begin{equation}
+\max \left \{t[1], \ldots, t[n] \right\}
+\end{equation}
+
+\paragraph{Algorithm Correctness} By the algorithm idea, $t[i] = m(i)$. The tallest stack is clearly the one maximizied over all choice of top box.
+
+\paragraph{Algorithm Complexity} The space complexity is $O(n)$ as we only store table $t$. The algorithm complexity is $O(n \log n)$ for sorting followed by $O(n^2)$ computations as the calculation of each $t[i]$ is $O(n)$ given the previously solved subproblems and there are $O(n)$ subproblems. Total complexity: $O(n^2)$.
+
+\subsection{Additional Example: Longest Common Subsequence}
+
+\noindent \textit{Also available as CLRS Ex. 15-4.}
+
+\paragraph{Problem} Given input strings $x = [x_1 \ldots x_m]$ and $y = [y_1 \ldots y_n]$, find the length of the longest common subsequence (LCS). A subsequence is a sequence that appears in the same relative order, but not necessarily contiguous\footnote{Additional exercise: consider the related problem of finding the longest common substring (here we require that the string be contiguous). You can build a related dynamic problem algorithm that is of the same complexity, but a smarter algorithm can be built using a generalized suffix tree to solve this in $O(n + m)$.}. Ex. If $x = [abcdgh]$ and $y = [aedfhr]$ then the LCS is $[adh]$ of length 3. 
+
+\paragraph{Algorithm Idea} Let $\ell(x, y)$ be the length of the LCS of $x$ and $y$. Here is a recursive definition of $\ell(x,y)$ for $m, n > 1$:
+\begin{equation}
+\ell(x_1\ldots x_m,y_1 \ldots y_n) = \begin{cases} 1 + \ell(x_1 \ldots x_{m-1}, y_1 \ldots y_{n-2}) & \text{if } x_m = y_n \\ \max \left\{ \ell(x_1 \ldots x_{m-1}, y_1 \ldots y_n), \ell(x_1 \ldots x_m, y_1 \ldots y_{n-1})\right \} & \text{o.w.}\end{cases} \label{eq:rec2}
+\end{equation}
+Why is this the definition? If the last characters of $x$ and $y$ match, then the are necessarily in the LCS, so recursively check the substring excluding them. If the last characters don't match then, then at least one of them isn't in the LCS, so check both cases and choose the maximum.
+
+\paragraph{Algorithm Description} Generate a table $t$ of size $mn$ indexed by tuples $(i,j)$ for $1 \leq i \leq m$ and $1 \leq j \leq n$. Set $t[1,1] \leftarrow 1$ if $x_1 = y_1$ and $t[1,1] \leftarrow 0$ otherwise. Systematically, apply the following recursive definition to calculate all $t[i,j]$:
+\begin{equation}
+t[i][j] \leftarrow \begin{cases} 1 + t[i-1,j-1] & \text{if } x_i = y_j \\ \max \left\{ t[i-1,j], t[i,j-1] \right\} & \text{o.w.}\end{cases} \label{eq:rec2alg}
+\end{equation}
+Here we assume $t[i,j] = 0$ if $i < 1$ or $j < 1$. Return $t[m,n]$.
+
+\paragraph{Algorithm Correctness} As an exercise, convince yourself that the algorithm idea above is correct. Then, as $\ell(x_1,y_1) = t[1,1]$ and the similarity of (\ref{eq:rec2}) and (\ref{eq:rec2alg}), it follows that $t[i,j] = \ell(x_1 \ldots x_i, y_1 \ldots y_j)$ for $1 \leq i \leq m$ and $1 \leq j \leq n$. Then returning $t[m,n]$ yields the desired result.
+
+\paragraph{Algorithm Complexity} The space complexity is $O(mn)$ as we only store $t$. The time complexity is $O(mn)$ as well because the calculation of each $t[i,j]$ is $O(1)$ given the subproblems have been solved and there are $O(mn)$ subproblems.
+
+\paragraph{Extension} Given an $O(n^2)$ time algorithm to find the longest monotonically increasing subsequence of a sequence of $n$ numbers.
+
+\paragraph{Algorithm Description} Sorting the sequence. Return the LCS of the sorted sequence and the original sequence.
+
+\paragraph{Algorithm Correctness} The sorted sequence is by definition monotonically increasing so any subsequence has the same property. Therefore, the longest common subsequence with the original sequence is, by construction, (a) the longest and (b) monotonically increasing.
+
+\paragraph{Algorithm Complexity} Sorting is an $O(n \log n)$ algorithm and LCS as shown above is $O(n^2)$ as the strings have the same length. Total complexity: $O(n^2)$.
+
+\subsection{Additional Example: Possible Scores}
+
+\paragraph{Problem} Consider a game where a player can score either $p_1, p_2, \ldots, p_m$ points in a move. Given a total score $n$, find number of ways to reach the total (order dependent).
+
+\paragraph{Algorithm Description} Generate a table $t$ of size $n + 1$ indexed $0 \ldots n$. For base case, set $t[0] \leftarrow 1$. Then for $i = 1, ..., n$, set
+\begin{equation}
+t[i] \leftarrow \sum_{j = 1}^m t[i - p_j]
+\end{equation}
+where we use the notation $t[k] = 0$ for $k < 0$. Return $t[n]$.
+
+\paragraph{Algorithm Correctness} We prove by induction. For $n = 0$ (base case), there is a unique way to reach the total: no scores were made. Assume for induction that correctness holds for all $n' < n$. Consider a score sequence $a_1, \ldots, a_k$ that sums to $n$. Then necessarily $a_1, \ldots, a_{k-1}$ sums to $n - a_k$. By the induction hypothesis, the number of ways to total $n - a_k$ is equal to $t[n - a_k]$. Therefore, by considering all possible $a_k$ (i.e. the final score in the sequence), we count all ways to total $n$. The choices for $a_k$ are precisely, $p_1, \ldots, p_m$, which the algorithm considers.
+
+\paragraph{Algorithm Complexity} The space complexity is $O(n)$ as we store $(n + 1)$ elements each requiring $O(1)$ space. The time complexity is $O(nm)$ as we calculate each $t[i]$ for $i = 0, \ldots, n$ and each calculating is the sum of $m$ numbers. If $m$ is small then the algorithm has complexity $O(n)$ which we will see next can be beat!
+
+
+\paragraph{A Better Algorithm} In the previous algorithm, we calculated each $t[i]$ from $i = 0, \ldots, n$. But this is tedious as there is a lot of repetition. Let's adjust this by using the repetition of squaring trick. Informally, this states that we can calculate $x^n$ in time $O(\log n)$ by squaring until we reach the exponent. For more details, read the week 1 recitation notes. \\
+
+\noindent For this part, we are \textbf{not} going to assume $p_1, \ldots, p_m, m$ or $n$ are small numbers. Rather they can be potentially large, so our complexity will rely on this. However, we will assume that $p_1 \leq \ldots \leq p_m$. Recall the recurrence relation:
+\begin{equation}
+a_n = a_{n - p_1} + a_{n - p_2} + \ldots + a_{n - p_m} \label{eq:recurrence}
+\end{equation}
+This can be expressed in the equivalent matrix form:
+%\begin{equation}
+%\left(\begin{tabular}{c | c c c} 0 & \multicolumn{3}{c}{\multirow{3}{*}{$\ \ \mathbb{I} \ \ $}} \\ \vdots & \multicolumn{3}{c}{} \\ 0 & \multicolumn{3}{c}{} \\ \cline{1-4} \multicolumn{4}{c}{$v$} \end{tabular}\right) \cdot \begin{pmatrix} a_{n - p_m} \\ \vdots \\ a_{n-2} \\ a_{n-1} \end{pmatrix} = \begin{pmatrix} a_{n - p_m + 1} \\ \vdots \\ a_{n-1} \\ a_{n} \end{pmatrix} \label{eq:recursivedef}
+%\end{equation}
+where $\mathbb{I}$ is the identity matrix of size $p_m - 1$ and $v$ is the $p_m \times 1$ vector that forms the linear equation in (\ref{eq:recurrence}). Write 
+%\begin{equation}
+%M = \left(\begin{tabular}{c | c c c} 0 & \multicolumn{3}{c}{\multirow{3}{*}{$\ \ \mathbb{I} \ \ $}} \\ \vdots & \multicolumn{3}{c}{} \\ 0 & \multicolumn{3}{c}{} \\ \cline{1-4} \multicolumn{4}{c}{$v$} \end{tabular}\right)
+%\end{equation}
+Then, by repeated application of (\ref{eq:recursivedef}),
+\begin{equation}
+M^{n - p_m} \cdot \begin{pmatrix} a_{1} \\ \vdots \\ a_{p_m} \end{pmatrix} = \begin{pmatrix} a_{n - p_m + 1} \\ \vdots \\ a_{n} \end{pmatrix}
+\end{equation}
+By the repetition of squaring trick, we can calculate $M^{n - p_m}$ in $O(\log n)$ matrix multiplications. We assume here that matrix multiplication can be performed in $O(k^\omega)$ time for a $k \times k$ matrix\footnote{The actual value of $\omega$ is a piece of great interest in theoretical computer science. There is a large class of problems that are shown to be as hard as matrix multiplication. A trivial bound for $\omega \leq 3$ using the standard matrix multiplication approach. Strassen's algorithm gives a bound for $\omega \leq \log_2 7 \approx 2.807$. The lower bound is known to be $\omega \geq 2$ because it is the minimal time required to access every element. It is an open problem if $\omega = 2$.}. The result is $O({p_m}^\omega \log n)$ time algorithm for the matrix multiplication. We also need to calculate the initial vector; apply the initial approach detailed above to get a $O(m p_m)$ runtime algorithm for calculating the initial vector. Therefore the total complexity is
+\begin{equation}
+O \left(m p_m + {p_m}^\omega \log n \right)
+\end{equation}
+If $p_1, \ldots, p_m$ and $m$ are small, then the complexity of this algorithm is $O(\log n)$ which is a considerable improvement over the $O(n)$ algorithm previously presented!
+
+\subsection{Additional Example: Number of paths with $\leq \ell$ turns}
+
+\paragraph{Problem} Given $m, n, \ell$ integers, count the number of paths of length exactly $m + n$ to reach the bottom right square from the top left square of a $m \times n$ matrix with at most $\ell$ turns.\footnote{Additional exercise: What happens when you remove this path length restriction? Can you still solve this problem using dynamic programming? If so come up with an algorithm of similar complexity.} One can only move horizontally or vertically and a turn is considered any rotation of motion by $90$ degrees.
+
+\paragraph{Algorithm Idea} If the length of the path is exactly $m + n$ then you can only move right ($\mathcal{R}$) or down ($\mathcal{D}$). \\
+
+\noindent Define $c(i, j, k, d)$ as the number of paths of paths to square $(i,j)$  with $k$ more turns makeable with the next movement in direction $d$ (here $d = \mathcal{R}$ or $\mathcal{D}$). Here is a recursive definition for $c(i, j, k, d)$:
+\begin{equation}
+c(i,j,k, d) = \begin{cases} c(i-1, j, k, \mathcal{D}) + c(i, j-1, k - 1, \mathcal{R}) & \text{ if } d = \mathcal{D} \\
+c(i-1, j, k-1, \mathcal{D}) + c(i, j-1,k, \mathcal{R}) & \text{ if } d = \mathcal{R}  \end{cases} \label{eq:rec3}
+\end{equation}
+Why is this the definition? In order to get to square $(i,j)$ you must have come from $(i - 1, j)$ moving $\mathcal{D}$ or $(i, j - 1)$ moving $\mathcal{R}$. Depending on the direction $d$ that you end up after, it will cost you a turn if $d$ disagrees with your direction of motion. Hence the $k-1$, as you use a turn.
+
+\paragraph{Algorithm Description} Generate a table $t$ of size $2mn(\ell +1)$ indexed by tuples $(i, j, k, d)$ where $1 \leq i \leq m, 1 \leq j \leq n, 0 \leq k \leq \ell$ and $d \in \{ \mathcal{D}, \mathcal{R} \}$. For a base case, $t[1, 1, \ell, d] = 1$ for either choice of $d$ and $t[1,1,k, d] = 0$ for $k < \ell$. Systematically, apply the following definition to calculate all $t[i,j,k,d]$:
+\begin{equation}
+t[i,j,k,d] = \begin{cases} t[i-1, j, k, \mathcal{D}] + t[i, j-1, k - 1, \mathcal{R}] & \text{ if } d = \mathcal{D} \\
+t[i-1, j, k-1, \mathcal{D}] + t[i, j-1,k, \mathcal{R}] & \text{ if } d = \mathcal{R}  \end{cases} \label{eq:rec3alg}
+\end{equation}
+Here we assume $t[i,j,k,d] = 0$ if undefined. Then return the following sum
+\begin{equation}
+\sum_{\substack{0 \leq k \leq \ell \\ d \in \{\mathcal{D},\mathcal{R}\}}} t[m,n,k,d]
+\end{equation}
+
+\paragraph{Algorithm Correctness} As an exercise, convince yourself that the algorithm idea above is correct. Then, by the base case of the algorithm and the similarity of (\ref{eq:rec3}) and (\ref{eq:rec3alg}), its easy to see that $t[i,j,k,d] = c[i,j,k,d]$. Then, it is only a matter of returning the sum of any $t$ element of either direction having any of $0, \ldots, \ell$ turns left to make.
+
+\paragraph{Algorithm Complexity} The space complexity is $O(mn\ell)$ ans we only store $t$. The time complexity is $O(mn\ell)$ as well because the calculation of each element of $t$ is $O(1)$ given the subproblems have been solved and there are $O(mn\ell)$ subproblems.\footnote{Additional exercise: Now that you are well acquainted with dynamic programming algorithms as well as the repetition of squaring trick, construct a $O(n m \log \ell)$ algorithm to solve this problem. Hint: The approach is very similar to that applied to the possible scores problem.}
 
 \newpage
 \section{Greedy Algorithms}
 
+\subsection{Fractional Knapsack}
+
+\subsection{Principal Properties of Greedy Algorithms}
+
+\subsection{Activity Selection}
+
+\subsection{Minimum Spanning Trees}
+
+\subsection{Kruskal's Algorithm}
+
+\subsection{Matriods and Abstraction of Greedy Problems}
+
+\subsection{Metric Steiner Tree Problem}
+
+\subsection{Huffman Codes}
+
+\subsection{Prim's Algorithm}
+
+\subsection{Clustering and Packing}
+
+\subsection{Additional Example: Roadtrip}
+
+\subsection{Additional Example: Coin Changing}
+
+\subsection{Additional Caching: Offline Caching}
+
 \newpage
 \section{Graph Algorithms}
+
+\subsection{Graph Definitions}
+
+\subsection{Single-Source Shortest Paths}
+
+\subsection{Dijkstra's Algorithm}
+
+\subsection{Bellman-Ford Algorithm}
+
+\subsection{Semi-Rings}
+
+\subsection{All Pairs Shortest Paths}
+
+\subsection{Floyd-Warshall}
+
+\subsection{Johnson}
+
+\subsection{Cut for Space: Savitch's Algorithm}
+
+\subsection{Depth-First Search}
+
 
 \newpage
 \section{Branch and Bound}
@@ -795,9 +1018,13 @@ Let's verify that $f$ and $h$ have the desired relation. If $h(t) = \infty$ then
 \end{equation}
 Therefore, the indicator function is $0$ so $f(\ell) = 0$ so $f(\ell) \leq h(t)$. So, we have completely written Knapsack in the Branch and Bound formalism. Effectively, we've converted our intuition of disregarding any item set that exceeds the weight capacity early into a formal function. 
 
+\subsection{Traveling Salesman Problem}
 
 \newpage
 \section{Divide and Conquer}
+
+\subsection{Mergesort}
+
 The divide and conquer technique is a recursive technique that splits a problem into 2 or more subproblems of equal size. General problems that follow this technique are sorting, multiplication, and discrete Fourier Transforms.
 
 \subsection{Generic Algorithm Design}
@@ -847,7 +1074,27 @@ T(n) &= \Theta(a^{\log_b n}) + \sum_{k = 0}^{\log_b n} a^k \Theta \left( \left( 
 \end{equation}
 For the third case, recognize that it's nearly identical to the first except the sumations are bounded in the other direction which leaves $f(n)$ as the dominating term. \qed
 
-\subsection{Closest Two Points, an example}
+\subsection{Quicksort}
+
+\subsection{Lower bound on Sorting}
+
+\subsection{Fast Integer Multiplication}
+
+\subsection{Fast Division, Newton's Method}
+
+\subsection{Convolution}
+
+\subsection{Polynomial Multiplication}
+
+\subsection{Fast Fourier Transform}
+
+\subsection{Matrix Computations}
+
+\subsection{Matrix Determinant and Inverse as hard as Multiplication}
+
+\subsection{Strassen's Laser for Matrix Multiplication}
+
+\subsection{Additional Examples: Closest Two Points}
 
 \paragraph{Problem} Given a set $S = \{s_1, \ldots s_n\}$ where $s_i = (x_i, y_i)$ find the two closest points in euclidean distance.
 
@@ -863,13 +1110,49 @@ Following the divide and conquer technique we calculate $d$ the minimum distance
 
 \noindent We've already sorted by $y$, so if we construct $T_1$ and $T_2$ in $O(n)$ time from the $y$ sorted list, we can then find pairs that transcend the seperation in $10 \cdot n/2$ comparisons which is $O(n)$. By the Master Theorem, we get a runtime of $O(n \log n)$.
 
+\subsection{Additional Example: Convex Hull}
+
+\subsection{Additional Example: Cartesian Sum of Sets}
+
 \newpage
-\section{Multiplicative Weights Algorithm}
+\section{Streaming Algorithms}
+
+\subsection{Formalism}
+
+\subsection{Additional Example: Uniform Sampling}
 
 \newpage
 \section{Max-Flow Min-Cut}
 
+\subsection{Flows and Capacitated Graphs}
+
+\subsection{Theorem}
+
+\subsection{Floyd-Fulkerson Algorithm}
+
+\subsection{Edmonds-Karp Algorithm}
+
 \newpage
-\section{Dynamic Programming}
+\section{Linear Programming}
+
+\subsection{Definition and Importance}
+
+\subsection{Feasibility}
+
+\subsection{Dual Linear Program}
+
+\subsection{Simplex Algorithm}
+
+\subsection{Approximation Theory}
+
+\subsection{Two Person Zero-Sum Games}
+
+\subsection{Randomized Sorting Complexity Lower Bound}
+
+\subsection{Circuit Evaluation}
+
+\subsection{Khachiyan's Ellipsoid Algorithm}
+
+\subsection{Set Cover, Integer Linear Programming}
 
 \end{document}
