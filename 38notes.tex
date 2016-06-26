@@ -454,7 +454,20 @@ Its easy to see as $\gcd(a,b)$ divides $a$ and $b$ then it divides any $ax + yb$
 \end{proof}
 
 \subsection{Repeated Squaring Trick}
-% TODO
+How many multiplications does it take to calculate $x^n$ for some $x$ and positive integer $n$? Well na\"ively, we can start by calculating $x, x^2, x^3, \ldots x^n$ by calculating $x^j \leftarrow x \cdot x^{j-1}$. So this is $O(n)$ multiplications. \\
+
+\noindent What if we wanted to calculate $x^n$ where we know $n = 2^m$ for some positive integer $m$. This time we only calculate, $x, x^2, x^{2^2}, \dots, x^{2^m}$ by calculating $x^{2^k} \leftarrow x^{2^{k-1}} \cdot x^{2^{k-1}}$. This is $O(m) = O(\log n)$ multiplications and cost $O(1)$ space as we only store the value of a single power of $x$ at a time. \\
+
+\noindent We can then extend this to calculate $x^n$ for any $n$. Calculate the largest power $m$ of 2 smaller than $n$ (this is easy given a binary representation of $n$)\footnote{This makes $m \in O(\log n)$}. Then calculate $x^{2^j}$ for $j = 1, \ldots, m$ as before but this time writing each of them into memory. This takes $O(\log n)$ space. If $n$ has binary representation $(a_m a_{m-1} \ldots a_0)_2$ where $a_j \in \{0, 1\}$ then 
+\begin{equation}
+x^n = \prod_{j = 0}^m x^{a_m 2^j}
+\end{equation}
+Therefore, using the powers we have written into memory, in an additional $O(\log n)$ multiplications we can calculate any power $x^n$. So any power $x^n$ can be calculated using $O(\log n)$ multiplications and $O(\log n)$ space.\footnote{If we wanted to calculate all powers $x, \ldots, x^n$ then the na\"ive method is optimal as it runs in $O(n)$. This method would take us $O(n \log n)$. This is a natural tradeoff and we will see it again in single-source vs. all-source shortest path graph algorithms.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% DYNAMIC PROGRAMMNG
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newpage
 \section{Dynamic Programming}
@@ -577,8 +590,49 @@ Assume that $f(i) = g( f(j_1), \ldots, f(j_k) )$ for some function $g$. Construc
 
 \noindent In this class, we won't penalize you for building a bottom-up or memoization dynamic programming algorithm when the other one was better; but it certainly something you should really think about in every algorithm design.
 
-\subsection{$k$-Clustering, an example}
-A classic Dynamic Programming problem is that of $k$-Clustering, our next example.
+\subsection{1D $k$-Clustering}
+A classic Dynamic Programming problem is that of 1-dimensional $k$-Clustering, our next example.
+
+\begin{defn}[1D Cluster radius]
+Given a set $X$ of $n$ points $x_1, \ldots, x_n \in \RR$ and set $C$ of $k$ points $c_1, \ldots, c_k \in \RR$, the cluster radius is the minimum radius $r$ s.t. every $x_i$ is at most $r$ from some $c_j$. Quantitatively, this is equivalent to
+\begin{equation}
+r = \max_{1 \leq i \leq n} \left( \min_{1 \leq j \leq n} \abs{x_i - c_j} \right)
+\end{equation}
+\end{defn} \ \\
+
+\begin{exer}[1D $k$-Clustering]
+Given a set $X$ of $n$ points in $\RR$, find a set $C$ of $k$ points in $\RR$ that minimizes the cluster radius.
+\end{exer}
+
+\noindent At first glance, this problem seems really hard and rightfully so. We're looking for $k$ points $c_1, \ldots, c_k$ but they can sit anywhere on the number line. In that regard there are infinite choices that we are minimizing over. Let's simply with some intuitions about the problem. \\
+
+\noindent When we calculate the cluster radius, we can associate to each point $x_i$ a closest point $c_j$. So let's define the set $S_j = \{x_i \ : \ c_j \text { is the closest point of } C \}$. Since all the points lie on the number line, pictorally, these sets partition the number line into distinct regions. Figure \ref{1d-partition} demonstrates this partition.
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\draw[latex-latex] (-3.8,0) -- (3.8,0) ; %edit here for the axis
+\foreach \x in  {-3,-2,-1,0,1,2,3} % edit here for the vertical lines
+\draw[shift={(\x,0)},color=black] (0pt,3pt) -- (0pt,-3pt);
+\foreach \x in {-3,-2,-1,0,1,2,3} % edit here for the numbers
+\draw[shift={(\x,0)},color=black] (0pt,0pt) -- (0pt,-3pt) node[below] 
+{$\x$};
+\draw[o-o] (0.92,0.3) -- (2.08,0.3);
+\draw[o-o] (-1.08,0.3) -- (1.08,0.3);
+\draw[o-o] (1.92,0.3) -- (3.08,0.3);
+\draw[shift={(0,0)},color=blue, very thick] (0pt,0.5) -- (0pt,-3pt);
+\draw[shift={(1.5,0)},color=blue, very thick] (0pt,0.5) -- (0pt,-3pt);
+\draw[shift={(2.5,0)},color=blue, very thick] (0pt,0.5) -- (0pt,-3pt);
+\end{tikzpicture}
+
+\caption{Assume that $C = \{-1, 1, 2, 3\}$. This divides the number line into partitions indicated by the blue lines. For any $x_i$ the unique point of $C$ within the partition is the closest point of $C$. In particular, for any point $c_j$, $S_j$ is the set of $x_i$ in its partition.}
+
+\label{1d-partition}
+\end{figure}
+
+\noindent By figuring out this relation to partitions of the number line, we've reduced our problem to finding out which partition of $n$ points minimizes the cluster radius. How many partitions are there? Combinatorics tells us there are ${n - 1 \choose k - 1}$ partitions. We can do better. \\
+
+\noindent Our intuition with any dynamic programming algorithm starts with how we state a subproblem. One idea is to define the subproblem as the minimum $j$-cluster radius for points $\{x_1, \ldots, x_t\}$ for $1 \leq j \leq k$ and $1 \leq t \leq n$. This is a good idea because
+
 
 \subsection{How exactly hard is NP-Hard?}
 %TODO
