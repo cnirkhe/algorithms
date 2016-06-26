@@ -1,8 +1,8 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 \usepackage{fullpage}
 \usepackage{fancyhdr}
 \usepackage[headsep=1cm,total={6.5in, 8.5in}]{geometry}
-\usepackage[hidelinks,colorlinks]{hyperref}
+\usepackage[colorlinks,linkcolor=blue,urlcolor=black]{hyperref}
 \usepackage{mathdots, framed, dsfont}
 \usepackage{longtable, array, supertabular, commath, graphicx, mathtools}
 
@@ -138,7 +138,8 @@
 \fancyhf{}
 \chead{}
 \lhead{\leftmark}
-\cfoot{\thepage}
+\lfoot{\thepage}
+\rfoot{C. Nirkhe}
 
 \numberwithin{equation}{section}
 \numberwithin{figure}{section}
@@ -474,7 +475,7 @@ Before you get some alternate idea, let me state it that \emph{Dynamic Programmi
 
 \noindent \noindent In other words, your algorithm trying to calculate $f(x)$ might recursively call $f(y)$ many times. It will be therefore, more efficient to store the value of $f(y)$ and recall it rather than calculating it again and again. I know that's confusing, so lets look at a couple examples to clear it up. 
 
-\subsection{Tribonacci Numbers, an example}
+\subsection{Tribonacci Numbers}
 \noindent I'll introduce computing `tribonacci' numbers as a preliminary example\footnote{The easiest example is Fibonacci numbers but as I've given you the explicit formula in the previous chapter, it seems moot. Although this problem is also rather easily solvable with recurrence relations, but bear with me.} The tribonacci numbers are defined by $T_0 = 1, T_1 = 1, T_2 = 1$ and $T_k = T_{k -1} + T_{k-2} + T_{k - 3}$ for $k \geq 3$. \\
 
 \noindent Let's think about what happens when we calculate $T_9$. We first need to know $T_6, T_7$ and $T_8$. But recognize that calculating $T_7$ requires calculating $T_6$ as well as $T_7 = T_4 + T_5 + T_6$. So does $T_8$. This is the problem of overlapping subproblems. $T_6$ is going to be calculated 3 times in this problem if done na\"ively and in particular if we want to calculate $T_k$ the base cases of $T_0, T_1, T_2$ are going to be called $\exp(O(k))$ many times.\footnote{This isn't abusive notation. This is equivalent to saying the complexity is $O(b^k)$ for some base $b$. Check for yourself that this is true.} To remedy this, we are going to write down a table of values. Here let's assume the word model again.
@@ -506,14 +507,13 @@ For any problem,
 \end{framed}
 \noindent It's not necessary for ``smallest'' and ``biggest'' to refer to literal size. All that matters is that when the algorithm comes to a subproblem, it should be ready for it, i.e. it should already have solved the sub-subproblems that are useful for solving that subproblem.
 
-
 \noindent The basic formula for the runtime of a DP algorithm is
 \begin{framed}
 \[
 \text{Runtime} = (\text{Total number of subproblems}) \times \left(\begin{array}{c}\text{Time it takes to solve problems} \\ \text{given solutions to subproblems.}\end{array}\right)
 \]
 \end{framed}
-(Warning: sometimes, a more nuanced analysis is needed.)
+\noindent (Warning: sometimes, a more nuanced analysis is needed.) If the necessary subproblems are already calculated then in the RAM model their lookup is $O(1)$. As our algorithm is to build up the solution, we guarantee that each subproblem is solved\footnote{In practice, there is a more efficient dynamic programing algorithm called memoization, which we will cover soon.}, so this $O(1)$ lookup time is correct. Therefore, the total time is bounded by the time complexity to solve a subproblem multiplied by the number of subproblems. \\
 
 \subsection{Edit Distance, an example}
 Now might be a good time and go back to Chapter 2 and read the example problem there if you haven't done so already. 
@@ -536,55 +536,90 @@ For a given alphabet $\Sigma$, an \emph{edit operation} of a string is an insert
 \noindent Now, we don't know which of these 3 cases is going to occur. However, we do know that at least 1 of them must be true. Therefore, we can say that the distance is the minimum of these 3 values. Formally, we write this as:
 
 \begin{equation}
-d(k,\ell) \leftarrow \min \begin{cases} d(k, \ell - 1) + 1\\ d(k - 1, \ell) \\ d(k-1, \ell - 1) + 2 \cdot \One{x_k \neq y_\ell} \end{cases}
+d(k,\ell) \leftarrow \min \begin{cases} d(k, \ell - 1) + 1 \\ d(k - 1, \ell) + 1\\ d(k-1, \ell - 1) + 2 \cdot \One{x_k \neq y_\ell} \end{cases}
 \end{equation} 
 Here $\One{\cdot}$ is the indicator function; it equals 1 if the inside statement is true, and 0 otherwise. Therefore, its saying that the distance is 2 if they are not equal (because you'd have to add $y_\ell$ and remove $x_k$) and 0 if they are equal (no change required). \\
 
 \noindent The base cases for our problem are $d(k,0) = k$ and $d(0,\ell) = \ell$ (insert or remove all the characters). This gives us all the intuition to formalize our dynamic programming algorithm:
 
 \begin{alg}[Edit Distance]
-Generate a table of size $m \times n$ indexed as $t[k,j]$. 
+This is a dynamic programming algorithm. Generate a table of size $m \times n$ indexed as $t[k,\ell]$ representing the edit distance of strings $X_k$ and $Y_\ell$. Sequentially fill the table by the following rule:
+\begin{equation}
+t[k,\ell] \leftarrow \min \begin{cases} t[k, \ell - 1] + 1\\ t[k - 1, \ell] + 1 \\ t[k-1, \ell - 1] + 2 \cdot \One{x_k \neq y_\ell} \end{cases}
+\end{equation}
+where any call to $t[k,0] = k$ and $t[0,\ell] = \ell$. When the table is filled, returned $t[m,n]$. \\
+
+\noindent \textit{Algorithm Correctness.} We verify that the table is filled correctly. For base cases if one string is empty then the minimum update distance is removing or adding all the characters. Inductively, we prove that the rest of the table is filled. If the last characters of the substrings agree, then a edit path is to consider the substrings without the last characters. Alternatively the only two other edit paths are to add the last character of $Y$ or remove the last character of $X$. We minimize over these choices thus proving correctness. \\
+
+\noindent \textit{Algorithm Complexity.} Each entry of the table requires $O(1)$ calculations to fill given previous entries. As there are $O(mn)$ entries the total complexity is $O(mn)$ in the word model.
 \end{alg}
 
 \subsection{Memoization vs Bottom-Up}
-%TODO
+In the previous problem, we generated a table of values $t$ of size $m \times n$ and sequentially filled it up from the base cases to the most complex cases. At any given time, if we tried to calculate item $t[k, \ell]$ we were assured that the subproblems whose value $t[k,\ell]$ is based off of were already solved. In doing so, we had to fill up the entire table only to calculate the value at $t[m,n]$. \\
+
+\noindent This method is called the \emph{Bottom-Up} approach. Start from the bottom and work up to calculating all the higher level values. An alternative to the Bottom-Up method is \emph{memoization} (not memorization). If we need to calculate some value of the table $t[i]$ and it depends on values $t[j_1], t[j_2], \ldots, t[j_k]$ then we first check if the value of $t[j_1]$ is known. If it is, we use the value. Otherwise, we store in the computation stack our current position, and then add a new layer in which we calculate $t[j_1]$, recursively. This may create more stack layers, itself. Once this stack computation is complete, the stack is removed and we go on to calculating $t[j_2], t[j_3], \ldots, t[j_k]$ one after another. Then we compute $t[i]$ based on the values of $t[j_1], \ldots, t[j_k]$. \\
+
+\noindent Memoization should remind you of generic recursion algorithms with the additional step of first checking if a subproblems solution is already stored in the table and if so using it. More generally, the memoization algorithm looks like this:
+
+\begin{alg}[Memoized Dynamic Programming Algorithm]
+Assume that $f(i) = g( f(j_1), \ldots, f(j_k) )$ for some function $g$. Construct a table $t$. Then,
+\begin{enumerate}[(a)]
+\item Check if $t[i] \neq \null$. If so, return $t[i]$.
+\item Otherwise. Recursively calculate $f(j_1), \ldots, f_(j_k)$ and return $g(f(j_1), \ldots, f(j_k))$. 
+\end{enumerate}
+\end{alg}
+
+\noindent What are the advantages and disadvantages of memoization? First off, in all the problems we've looked at so far, the dependent subproblems have always had smaller indexes than the problem at hand. This is not always the case. A good example is a dynamic programming algorithm on a graph. Even if you number the vertices, you are still going to have all these weird loops because of the edges that you're going to have to deal with. Memoization helps here because you don't need to fill in the table sequentially. \\
+
+\noindent Secondly, in practice memoization can be faster. Occasionally, not all the entries in the table will be filled meaning that we didn't perform unnecessary computations. However, the computation complexity of memoization and bottom-up is in general the same. Remember we're generally looking for worst case complexity. Unless you can argue that more than a linear-factor of subcases are being ignored then you cannot argue a different in complexity. \\
+
+\noindent Where memoization is worse is the use of the additional stack space. In the case of the Tribonacci numbers, you would generate a stack of size $O(n)$ due to the dependency of each $T_j$ on $T_{j-1}$. In practice, the computation stack is held in the computers memory while generally the data that you are manipulating is held on the hard drive. You might not be able to fit a computational stack of size $O(n)$ in the memory.\footnote{There are interesting programmatic skirt arounds built for this in many functional languages such as Ocaml or Scala which rely considerably on large recursive algorithms.} In the case of Tribonacci numbers as every prior Tribonacci number or Edit Distance as the entire table will be filled up, bottom-up method is better. \\
+
+\noindent In this class, we won't penalize you for building a bottom-up or memoization dynamic programming algorithm when the other one was better; but it certainly something you should really think about in every algorithm design.
 
 \subsection{$k$-Clustering, an example}
 A classic Dynamic Programming problem is that of $k$-Clustering, our next example.
-%TODO
 
 \subsection{How exactly hard is NP-Hard?}
+%TODO
 
-\subsection{Knapsack, an example}
+\subsection{Knapsack}
+%TODO
 
-\subsection{Trellis Codes, an example}
+\subsection{Trellis Codes}
+%TODO
 
-\subsection{SAT Solves and Resolution Proofs, an example}
+\subsection{SAT Solves and Resolution Proofs}
+%TODO
 
-\subsection{Traveling Salesman Problem, an example}
+\subsection{Traveling Salesman Problem}
+%TODO
 
 \subsection{Additional Example: Box Stacking}
 
-\paragraph{Problem} Given a collection of $n$ 3D boxes of integer dimensions $\{b_1, \ldots, b_n\}$ where $b_i = (\ell_i, w_i, h_i)$, calculate the height of the tallest stack of boxes you can form under the following constraints: A box cannot be rotated\footnote{Additional exercise: solve this problem where rotation is allowed. You can still come up an algorithm of the same complexity.} and a box $b_i$ can only be stacked on $b_j$ if the base of $b_i$ fits completely within the base of $b_j$.
+\begin{exer}[Box Stacking] Given a collection of $n$ 3D boxes of integer dimensions $\{b_1, \ldots, b_n\}$ where $b_i = (\ell_i, w_i, h_i)$, calculate the height of the tallest stack of boxes you can form under the following constraints: A box cannot be rotated\footnote{Additional exercise: solve this problem where rotation is allowed. You can still come up an algorithm of the same complexity.} and a box $b_i$ can only be stacked on $b_j$ if the base of $b_i$ fits completely within the base of $b_j$.
+\end{exer}
 
-\paragraph{Algorithm Idea} Sort all the boxes by base area ($\ell_i \times w_i$). Clearly a box of smaller base area cannot fit below a larger. Let $m(i)$ be the height of the tallest stack of boxes with box $b_i$ at the top. Here is a recursive definition for $m(i)$:
+\begin{alg} \ \\
+\noindent \textit{Algorithm Idea.\footnote{I personally like this setup of Algorithm Idea, Description, Correctness, Complexity as a 4 part problem. The Idea should state your mathematical intuition and can then be cited by your other sections as necessary.}} Sort all the boxes by base area ($\ell_i \times w_i$). Clearly a box of smaller base area cannot fit below a larger. Let $m(i)$ be the height of the tallest stack of boxes with box $b_i$ at the top. Here is a recursive definition for $m(i)$:
 \begin{equation}
 m(i) = \max \left\{ h_i, \max_{\substack{j > i : \\w_i \leq w_j, \ell_i \leq l_j }} \{ m(j) + h_i \} \right\}
 \end{equation}
-Why is this the definition? We consider all possible blocks $b_j$ that could be directly below $b_i$ in the stack and then maximize recursively to get the maximum stack height. Because of the sorting, no block $b_j$ with $j < i$ can fit below block $b_i$.
+Why is this the definition? We consider all possible blocks $b_j$ that could be directly below $b_i$ in the stack and then maximize recursively to get the maximum stack height. Because of the sorting, no block $b_j$ with $j < i$ can fit below block $b_i$. \\
 
-\paragraph{Algorithm Description} Sort the boxes by base area so that $b_1$ has the least base area. Create a table $t$ of size $n$ indexed by $1 \leq i \leq n$. Starting with $i = n$ to $1$, define $t[i]$ by,
+\noindent \textit{Algorithm Description.} Sort the boxes by base area so that $b_1$ has the least base area. Create a table $t$ of size $n$ indexed by $1 \leq i \leq n$. Starting with $i = n$ to $1$, define $t[i]$ by,
 \begin{equation}
 t[i] \leftarrow \max \left\{ h_i, \max_{\substack{j > i : \\w_i \leq w_j, \ell_i \leq l_j }} \{ t[j] + h_i \} \right\}
 \end{equation}
 Return the following value:
 \begin{equation}
 \max \left \{t[1], \ldots, t[n] \right\}
-\end{equation}
+\end{equation} \\
 
-\paragraph{Algorithm Correctness} By the algorithm idea, $t[i] = m(i)$. The tallest stack is clearly the one maximizied over all choice of top box.
+\noindent \textit{Algorithm Correctness.} By the algorithm idea, $t[i] = m(i)$. The tallest stack is clearly the one maximizied over all choice of top box. \\
 
-\paragraph{Algorithm Complexity} The space complexity is $O(n)$ as we only store table $t$. The algorithm complexity is $O(n \log n)$ for sorting followed by $O(n^2)$ computations as the calculation of each $t[i]$ is $O(n)$ given the previously solved subproblems and there are $O(n)$ subproblems. Total complexity: $O(n^2)$.
+\noindent \textit{Algorithm Complexity.} The space complexity is $O(n)$ as we only store table $t$. The algorithm complexity is $O(n \log n)$ for sorting followed by $O(n^2)$ computations as the calculation of each $t[i]$ is $O(n)$ given the previously solved subproblems and there are $O(n)$ subproblems. Total complexity: $O(n^2)$.
+\end{alg}
 
 \subsection{Additional Example: Longest Common Subsequence}
 
@@ -705,11 +740,11 @@ Here we assume $t[i,j,k,d] = 0$ if undefined. Then return the following sum
 
 \subsection{Clustering and Packing}
 
-\subsection{Additional Example: Roadtrip}
+\subsection{Additional Example: Roadtrip}\footnote{Written by Celia Zhang.}
 
-\subsection{Additional Example: Coin Changing}
+\subsection{Additional Example: Coin Changing}\footnote{Written by Celia Zhang.}
 
-\subsection{Additional Caching: Offline Caching}
+\subsection{Additional Caching: Offline Caching}\footnote{Written by Celia Zhang.}
 
 \newpage
 \section{Graph Algorithms}
@@ -1028,12 +1063,16 @@ Therefore, the indicator function is $0$ so $f(\ell) = 0$ so $f(\ell) \leq h(t)$
 The divide and conquer technique is a recursive technique that splits a problem into 2 or more subproblems of equal size. General problems that follow this technique are sorting, multiplication, and discrete Fourier Transforms.
 
 \subsection{Generic Algorithm Design}
-\paragraph{Algorithm}
+
+\begin{framed}
+\begin{alg}[Divide and Conquer] \ \\
 \begin{enumerate}
 \item For positive integer $b > 1$, divide the problem into $b$ parts
 \item (Divide) Recursively solve the subproblems
 \item (Conquer) Consider any situations that transcend subproblems
 \end{enumerate}
+\end{alg}
+\end{framed}
 
 \paragraph{Complexity} By the construction, the time complexity of the algorithm $T(n)$ satisfies the recurrence relation: 
 \begin{equation}
@@ -1098,7 +1137,7 @@ For the third case, recognize that it's nearly identical to the first except the
 
 \paragraph{Problem} Given a set $S = \{s_1, \ldots s_n\}$ where $s_i = (x_i, y_i)$ find the two closest points in euclidean distance.
 
-\paragraph{Algorithm}\footnote{The way I've written an algorithm here is not the way you should write one in this course. I've iterjected a lot of unneccessary details to guide the explanation.} We consider a divide and conquer algorithm. First sort the points by both $x$ and $y$ coordinate. This gives us two distinct permutations $\pi, \sigma$ such that
+\paragraph{Algorithm}We consider a divide and conquer algorithm.\footnote{The way I've written an algorithm here is not the way you should write one in this course. I've interjected a lot of unnecessary details to guide the explanation.}  First sort the points by both $x$ and $y$ coordinate.This gives us two distinct permutations $\pi, \sigma$ such that
 \begin{equation}
 x_{\pi(1)} \leq \ldots \leq x_{\pi(n)} \qquad y_{\sigma(1)} \leq \ldots \leq y_{\sigma(n)}
 \end{equation}
@@ -1110,9 +1149,9 @@ Following the divide and conquer technique we calculate $d$ the minimum distance
 
 \noindent We've already sorted by $y$, so if we construct $T_1$ and $T_2$ in $O(n)$ time from the $y$ sorted list, we can then find pairs that transcend the seperation in $10 \cdot n/2$ comparisons which is $O(n)$. By the Master Theorem, we get a runtime of $O(n \log n)$.
 
-\subsection{Additional Example: Convex Hull}
+\subsection{Additional Example: Convex Hull}\footnote{Written by Kevin Shu}
 
-\subsection{Additional Example: Cartesian Sum of Sets}
+\subsection{Additional Example: Cartesian Sum of Sets}\footnote{Written by Kevin Shu}
 
 \newpage
 \section{Streaming Algorithms}
