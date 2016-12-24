@@ -1,0 +1,423 @@
+\documentclass[10pt]{article}
+\usepackage{fullpage}
+\usepackage{fancyhdr}
+\usepackage[headsep=1cm,total={6.5in, 8in}]{geometry}
+\usepackage[colorlinks,linkcolor=blue,urlcolor=black]{hyperref}
+\usepackage{mathdots, framed, dsfont}
+\usepackage{longtable, array, supertabular, commath, graphicx, mathtools}
+
+\usepackage{amsfonts}
+\makeatletter
+\def\amsbb{\use@mathgroup \M@U \symAMSb}
+\makeatother
+
+\usepackage{enumerate}
+\usepackage{rotating}
+
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.10}
+\usetikzlibrary{shapes.geometric,arrows,fit,matrix,positioning}
+\tikzset
+{
+    treenode/.style = {circle, draw=black, align=center, minimum size=1.5cm},
+    subtree/.style  = {isosceles triangle, draw=black, align=center, minimum height=0.5cm, minimum width=1cm, shape border rotate=90, anchor=north}
+}
+
+
+\makeatletter
+\def\amsbb{\use@mathgroup \M@U \symAMSb}
+\makeatother
+
+
+\usepackage{amsmath,amssymb, amsthm, mathtools, commath,mathrsfs}
+
+\usepackage{multirow}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section] % reset theorem numbering for each chapter
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{rmk}[thm]{Remark}
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition} % definition numbers are dependent on theorem numbers
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{claim}[thm]{Claim}
+\newtheorem{nota}[thm]{Notation}
+\newtheorem{exmp}[thm]{Example} % same for example numbers
+\newtheorem{alg}[thm]{Algorithm}
+\newtheorem{exer}[thm]{Exercise}
+
+\newcommand\diff{\mathrm{d}}
+\newcommand{\borel}{\mathfrak{B}}
+\newcommand{\BB}{\mathcal{B}}
+\newcommand{\CC}{\mathcal{C}}
+\newcommand{\Cov}{\mathbf{Cov}}
+\newcommand{\EE}{\mathbf{E}\hspace{0.02em}}
+\newcommand{\FF}{\mathbf{F}}
+\newcommand{\GG}{\mathcal{G}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\II}{\mathbf{I}}
+\newcommand{\LL}{\mathbb{L}}
+\newcommand{\KK}{\mathcal{K}}
+\newcommand{\JJ}{\mathcal{J}}
+\newcommand{\PP}{\mathbf{Pr}\hspace{0.02em}}
+\newcommand{\poly}{\text{poly}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\NNN}{\mathcal{N}}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\One}[1]{\mathds{1}_{\{ #1 \}}}
+\newcommand{\OPT}{\textbf{OPT}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\rnk}{\textbf{rnk}\hspace{0.05em}}
+\newcommand{\tr}{\begin{bf}tr\end{bf}\hspace{0.05em}}
+\newcommand{\TT}{\mathscr{T}}
+\newcommand{\UU}{\mathcal{U}}
+\newcommand{\Var}{\mathbf{Var}\hspace{0.13em}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\Gal}{\text{Gal}}
+\newcommand{\Aut}{\text{Aut}}
+\newcommand{\nsub}{\trianglelefteq}
+\newcommand{\nullset}{\varnothing}
+\newcommand{\topo}{\mathscr{T}}
+\newcommand{\ve}{\varepsilon}
+\newcommand{\inv}[1]{#1^{-1}}
+\newcommand{\sgn}[1]{\hspace{0.08em}\mathbf{sgn}\hspace{0.02em}\left(#1\right)}
+\newcommand{\str}[1]{{#1}_\epsilon}
+\newcommand{\short}[1]{\mbox{\sc #1}}
+\newcommand{\st}{\text{ s.t. }}
+\newcommand{\id}{\text{id}}
+\newcommand{\diag}{\textbf{diag}}
+\newcommand{\der}[2]{\frac{\dif #1}{\dif #2}}
+\newcommand{\pder}[2]{\frac{\partial#1}{\partial#2}}
+\newcommand{\pderthree}[3]{\frac{\partial^2 #1}{\partial#2 \partial#3}}
+\newcommand{\bin}[1]{\{0,1\}^ #1}
+
+\newcommand{\true}{\short{true}}
+\newcommand{\false}{\short{false}}
+\newcommand{\nil}{\short{null}}
+
+\newcommand{\tz}{{\tilde z}}
+
+\newcommand{\floor}[1]{\left\lfloor #1\right\rfloor}
+
+\newcommand{\LPeq}[6]{
+\begin{array}{lll@{}l}
+#1  & \displaystyle #2 &\\[1.1em]
+\st & \displaystyle #3  & #4\\[1.1em]
+    & \displaystyle #5  & #6
+\end{array}
+}
+
+\newcommand{\sdp}{\mbox{\sc sdp}\hspace{0.01em}}
+\newcommand{\maxcut}{\mbox{\sc maxcut}\hspace{0.01em}}
+\newcommand{\maxqp}{\mbox{\sc maxqp}\hspace{0.01em}}
+\newcommand{\mapprox}{\mbox{\sc 0th-moment-approx}\hspace{0.01em}}
+
+\newcommand{\LPeqsimple}[4]{
+\begin{array}{lll@{}l}
+#1  & \displaystyle #2 &\\[1.1em]
+\st & \displaystyle #3  & #4
+\end{array}
+}
+
+\newcommand{\LPeqcomplex}[8]{
+\begin{array}{lll@{}l}
+#1  & \displaystyle #2 &\\[1.1em]
+\st & \displaystyle #3  & #4\\[1.1em]
+    & \displaystyle #5  & #6\\[1.1em]
+    & \displaystyle #7  & #8
+\end{array}
+}
+
+\usepackage{amsmath}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\chead{}
+\lhead{\leftmark}
+\lfoot{\thepage}
+\rfoot{C. Nirkhe}
+
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+
+
+\begin{document}
+
+
+\newpage
+\section{Greedy Algorithms}
+The second algorithmic strategy we are gong to consider is greedy algorithms. In layman's terms, the greedy method is a simple technique: build up the solution piece by piece, picking whatever piece looks best at the time. This is not meant to be precise, and sometimes, it can take some cleverness to figure out what the greedy algorithm really is. But more often, the tricky part of using the greedy strategy is understanding whether it works! (Typically, it doesn't.) \\
+
+\noindent However, when you are faced with an NP-hard problem, you shouldn't hope to find an efficient exact algorithm, but you can hope for an approximation algorithm. Often, a simple \emph{greedy} strategy yields a decent approximation algorithm.
+
+\subsection{Fractional Knapsack}
+
+Let's consider a relaxation of the Knapsack problem we introduced in the Dynamic Programming chapter. A \emph{relaxation} of a problem is when we simplify the constraints of a problem in order to make the problem easier. Often we consider a relaxation because it produces an \emph{approximation} of the solution to the original problem.
+
+\begin{exer}[Fractional Knapsack]
+Like the Knapsack problem, there are $n$ items with weights $w_1, \ldots, w_n$ and values $v_1, \ldots, v_n$ with a Knapsack capacity of $W$. The output should be a fractional subset $s$ of the items maximizing $v(s) = \sum_i s_i v_i$ subject to the capacity constraint $\sum s_i w_i \leq W$. By a fractional subset, we mean a vector $s = (s_1, \ldots, s_n)$ with all $0 \leq s_i \leq 1$.\footnote{This is the \emph{relaxation} of the indicator vector we formulated the Knapsack problem around.}
+\end{exer}
+
+\noindent Let's introduce the notion of \emph{quality} of an item: $q_i = v_i / w_i$. Intuitively, if the item was say a block of gold, it would be the dollar value of a single kg of the gold. The greedy strategy we are going to employ is going to picking items from highest to lowest quality. But first a lemma:
+
+\begin{lem}
+Let $q_1 > q_2$. Then in any optimal solution, either $s_1 = 1$ or $s_2 = 0$.
+\end{lem}
+
+\proof A proof by contradiction. Assume an optimal solution exists with $s_1 < 1$ and $s_2 > 0$. Then for some small $0 < \delta$, we can define a new fractional subset by
+\begin{equation}
+s_1' = s_1 + \delta / w_1, \qquad s_2' = s_2 - \delta /w_2
+\end{equation}
+This will still be a fractional subset and still satisfy the capacity constraint and will increase the value by
+\begin{equation}
+v_1 \delta / w_1 - v_2 \delta / w_2 = \delta(q_1 - q_2) > 0
+\end{equation}
+This contradictions the assumed optimality. Therefore either $s_1 = 1$ or $s_2 = 0$. \qed \\
+
+\noindent This tells us that if we sort the items by quality, we can greedily pick the items by best to worst quality. 
+
+\begin{alg}[Fractional Knapsack]
+Sort the items by quality so that $v_1 / w_1 \geq \ldots v_n / w_n$. Initialize $C = 0$ (to represent the weight of items already in the knapsack). For each $i = 1$ to $n$, if $w_i < W - C$, pick up all of item $i$. If not, pick up the fraction $(W - C)/w_i$ and halt.
+\end{alg}
+
+\noindent \textit{Proof of Correctness. } By the lemma above, we should pick up entire items of highest quality until no longer possible. Then we should pick the maximal fraction of the item of next highest quality and the lemma directly forces all other items to not be picked at all. \qed \\
+
+\noindent \textit{Complexity. } We need to only sort the values by quality and then in linear time select the items. Suppose the item values and weights are $k$ bits integers for $k = O(\log n)$. We need to compute each $q_i$ to sufficient accuracy; specifically, if $q_i - q_j > 0$ then
+\begin{equation}
+q_i - q_j = \frac{v_i w_j - v_j w_i}{w_iw_j} > \frac{1}{w_iw_j} \geq 2^{-2k}
+\end{equation}
+Therefore, we only need $O(k)$ bits of accuracy. This can be computed in $\tilde{O}(k)$ time per $q_i$ and therefore total $n \tilde{O}(\log n)$. The total sorting time for per-comparison cost of $k$ is $O(nk \log n)$. This brings the total complexity to $O(n \log^2 n)$. \qed \\
+
+\noindent A final note about the fractional knapsack relaxation. By relaxation the constraint to allow fractional components of items, any optimal solution to fractional knapsack $\geq$ solution to classical knapsack. Also, our solution is almost integer; only the last item chosen is fractional. 
+
+\subsection{Activity Selection}
+
+\begin{exer}[Activity Selection]
+Assume there are $n$ activities each with its own start time $a_i$ and end time $b_i$ such that $a_i < b_i$. All these activities share a common resource (think computers trying to use the same printer). A feasible schedule of the activities is one such that no two activities are using the common resource simultaneously. Mathematically, the time intervals are disjoint: $(a_i, b_i) \cap (a_j, b_j) = \emptyset$. The goal is to find a feasible schedule that maximizes the number of activities $k$.
+\end{exer}
+
+\noindent The na\"ive algorithm here considers all subsets of the activities for feasibility and picks the maximal one. This requires looking at $2^n$ subsets of activities. Let's consider some greedy metrics by which we can select items and then point out why some won't work:
+\begin{enumerate}
+\item Select the earliest-ending activity that doesn't conflict with those already selected until no more can be selected.
+\item Select items by earliest start time that doesn't conflict with those already selected until no more can be selected.
+\item Select items by shortest duration that doesn't conflict with those already selected until no more can be selected.
+\end{enumerate}
+
+\noindent As you will see in a second, the first option is the correct one. Take a moment to come up with simple counterexamples to problems for which the second and third options don't come up with optimal feasible schedules. Choosing the right greedy metric is often the hardest part of finding a greedy algorithm. My strategy is to try to find some quick counterexamples and if I can't really think of any start trying to prove the correctness of the greedy method. \\
+
+\noindent Let's prove why the first option is correct. But first a lemma:
+
+\begin{lem}
+Suppose $S = ((a_{i_1}, b_{i_1}), \ldots, (A_{i_k}, b_{i_k}))$ is a feasible schedule not including $(a',b')$. Then we can exchange in $(a_{i_\ell},b_{i_\ell})$ for $(a', b')$ if $b' \leq b_{i_\ell}$ and if $\ell > 1$, then $b_{i_{\ell - 1}} \leq a'$.
+\end{lem}
+\proof We are forcing that the newt event ends before event $\ell$ and start after event $\ell - 1$. \qed
+
+\begin{thm}
+The schedule created by selecting the earliest-ending activity that doesn't conflict with those already selected is optimal and feasible.
+\end{thm}
+
+\proof Feasibility is trivial given the construction. Let $E = ((a_{i_1}, b_{i_1}), \ldots, (A_{i_k}, b_{i_k}))$ by the output created by selecting the earliest-ending activity and $S = ((a_{j_1}, b_{j_1}), \ldots, (A_{j_\ell}, b_{j_\ell}))$ any other feasible schedule. \\
+
+\noindent We claim that for all $m \leq \ell$, $(a_{i_m}, b_{i_m})$ exists and $b_{i_m} \leq b_{j_m}$ (or in layman's terms the $m$th activity in schedule $E$ always ends before then $m$th activity in schedule $S$). Assume the claim is false and $m$ is the smallest counterexample. Note $m \neq 1$ as the schedule $E$ by construction takes the first-ending event. If $m$ is a counterexample, then $b_{i_{m-1}} \leq b_{j_{m-1}} \leq a_{j_m}$ and $b_{i_m} > b_{j_m}$. This means that the event $j_m$ ends prior to the event $i_m$ and is feasible with the other events of $E$. But then event $j_m$ would have been chosen over event $i_m$, a contradiction. So the claim is true. \\
+
+\noindent Therefore, the number of events in $E$ is at least that of any other feasible schedule $S$, proving the optimality of $E$. \qed \\
+
+\noindent Let's take a moment to reflect on the general strategy employed in this proof: We considered the  greedy solution $E$ and any solution $S$ and then proved that $E$ is better than $S$ by arguing that if it weren't, then it would contradict the construction of $E$.
+
+\subsection{Minimum Spanning Trees}
+
+Let's transition to a graph theory problem. But first a plethora of definitions that are probably already familiar to you:
+
+\begin{defn}[Graph]
+A graph $G = (V, E)$ is a set of vertices $V$ and edges $E \subseteq {V \choose 2}$ (a set of pairs of elements of $V$). Notationally, we write $n = \abs{V}$ and $m = \abs{E}$.
+\end{defn}
+
+\begin{defn}[Weighted Graph]
+A weighted graph $G = (V, E, w)$ is a graph with a weight $w : E \rightarrow \RR$ assigned to each edge. 
+\end{defn}
+
+\begin{defn}[Path and Cycle]
+A path in $G$ is a list of edges $\left( (v_0, v_1),(v_1, v_2), \ldots, (v_{k-1},v_k) \right)$. The length of a path is the number of edges, i.e. $k$. A cycle is a path with $v_0 = v_k$; a \emph{simple cycle} has no repeated vertices.
+\end{defn}
+
+\begin{defn}[Connected]
+A graph is connected if there is a path between every pair of vertices.
+\end{defn}
+
+\begin{defn}[Subgraph]
+A subgraph of $G$ is a graph $G' = (V', E')$ such that $V' \subseteq V$ and $E' \subseteq E \cap {V' \choose 2}$. The weight of the subgraph $G'$ is
+\begin{equation}
+w(G') = \sum_{(u,v) \in E'} w(u,v)
+\end{equation}
+\end{defn}
+
+\begin{defn}[Forest and Trees]
+A forest in $G$ is a subgraph of $G$ without simple cycles and a tree is a connected forest.\footnote{To understand this naming convention, draw a couple examples and it will be clear instantaneously.}
+\end{defn}
+
+\begin{defn}[Spanning Tree]
+A spanning tree is a tree in $G$ that connects all the vertices of $G$.
+\end{defn}
+
+\noindent All these definitions, let to the following natural question.
+
+\begin{exer}[Minimum Spanning Tree]
+Given a connected graph $G = (V, E, w)$ with positive weights, find a spanning tree of minimum weight (an MST).
+\end{exer}
+
+\noindent Since we are interested in greedy solution, our intuition should be to build the minimum spanning tree up edge by edge until we are connected. My suggestion here is to think about how we can select the first edge. Since we are looking for minimum weight tree, let's pick the minimum weight edge in the graph (breaking ties arbitrarily). Then to pick the second edge, we could pick the next minimum weight edge. However, when we pick the third edge, we have no guarantee that the 3rd least weight edge doesn't form a triangle with the first two. So, we should consider picking the third edge as the least weight edge that doesn't form a cycle. And so on\ldots Let's formalize this train of thought.
+
+
+\begin{defn}[Multi-cuts and Coarsenings]
+A \emph{multi-cut} $S$ of a connected graph $G$ is a partition of $V$ into non-intersecting blocks $S_1, \ldots, S_k$. An edge \emph{crosses} $S$ if its endpoints are in different blocks. A multi-cut \emph{coarsens} a subgraph $G'$ if no edge of $G'$ crosses it. 
+\end{defn}
+
+\noindent We start with the empty forest i.e. all vertices and no edges: $G_0 = (V, \emptyset)$. This is already a multicut $S_0$ of the graph $G$ into $n$ non-intersecting blocks, namely each block containing a unique vertex. Also, as there are no edges, this multicut $S_0$ coarsens $G_0$. Our strategy will be to add the edge of minimum weight of $G$ that crosses $S_0$. This produces another forest $G_1$ (this time with $n-1$ non-intersecting blocks). Again this is a multicut $S_1$ and to build $G_2$, we add the edge of minimum weight of $G$ that crosses $S_1$. And so on\ldots 
+
+\begin{alg}[Kruskal's Algorithm for Minimum Spanning Tree] \ \\
+\begin{enumerate}
+\item Sort the edges of the graph by minimum weight into a set $S$.
+\item Create a forest $F$ where each vertex in the graph is a separate tree.
+\item While $S$ is non-empty and $F$ is not yet spanning
+\begin{enumerate}
+\item Remove the edge of minimum weight from $S$
+\item If the removed edge connects two different trees then add it to $F$, thereby combining two trees into one
+\end{enumerate}
+\end{enumerate} \label{kruskal-alg}
+\end{alg}
+
+\noindent We have not argued the correctness of this algorithm; rather we have just explained our intuition. We will prove the correctness by generalizing this problem, and proving correctness for a whole class of greedy algorithms at once.
+
+
+\subsection{Matroids and Abstraction of Greedy Problems}
+Up till now, the examples we have seen of greedy algorithms rely on an exchange lemma. We've seen this similar property in linear algebra before.
+
+\begin{rmk}
+Given a finite-dimensional vector space $X$ and two sets of linearly independent vectors $V$ and $W$ with (wlog) $\abs{V} < \abs{W}$, there is a vector $w \in W - V$ such that $V \cup \{w\}$ is linearly independent.
+\end{rmk}
+
+\noindent We can think of this an exchange by thinking of it as if $\abs{V} \leq \abs{W}$ then you can remove any $v \in V$ and find a replacement from $W$ to maintain linear independence. This notion of exchanging elements is incredibly powerful as it yields a very simple greedy algorithm to find the maximal linear independent set.
+
+Let's consider an abstraction of greedy algorithms that will help formulate a generalized greedy algorithm. 
+
+\begin{framed}
+\begin{defn}[Matroid]
+A {matroid} is a pair $(U, \mathcal{F})$, where $U$ (the universe) is a finite set and $\mathcal{F}$ is a collection of subsets of $U$, satisfying
+\begin{itemize}
+\item (Non-emptyness) There is some set $I \in \mathcal{F}$ (equiv. $F \neq \emptyset$)
+\item (Hereditary axiom) If $I \subseteq J$ and $J \in \mathcal{F}$, then $I \in \mathcal{F}$.
+\item (Exchange axiom) If $I, J \in \mathcal{F}$ and $|I| > |J|$, then there is some $x \in I \setminus J$ so that $J \cup \{x\} \in \mathcal{F}$.
+\end{itemize}
+\end{defn}
+
+\begin{defn}[Basis]
+A basis $I$ of a matroid $(U, \mathcal{F})$ is a maximal independent set such that $I \in \mathcal{F}$ and for any $J \st I \subseteq J$ then $J \notin \mathcal{F}$.
+\end{defn}
+\end{framed}
+
+\noindent In this context, we refer to sets in $\mathcal{F}$ as \emph{independent sets.}  A couple basic examples of matroids:
+\begin{itemize}
+\item The universe $U$ is a finite set of vectors. We think of a set $S \subseteq U$ as independent if the vectors in $S$ are linearly independent. A basis for this matroid is a basis (in the linear algebra sense) for the vector space spanned by $U$.
+\item The universe $U$ is again a finite set of vectors. But this time, we think of a set $S \subseteq U$ as independent if $\text{Span}(U \setminus S) = \text{Span}(U)$. (This is the \emph{dual matroid} to the previous matroid.) A basis for this matroid is a collection of vectors whose \emph{complement} is a basis (in the linear algebra sense) for $\text{Span}(U)$.
+\item Let $G = (V, E)$ be a connected undirected graph. Then the universe $U$ is the set of edges $E$ and $\mathcal{F} =$ all acyclic subgraphs of $G$ (forests).
+\item Let $G = (V, E)$ be a connected undirected graph again. Again $U = E$ but $\FF =$ the subsets of $E$ whose complements are connected in $G$. (This is the dual matroid of the previous example.)
+\end{itemize}
+\begin{defn}[Weighted Matroid]
+A \emph{weighted matroid} is a matroid $(U, \mathcal{F})$ together with a weight function $w: U \to \RR^+$. We may sometimes extend the function $w$ to $w : \mathcal{F} \rightarrow \RR^+$ by $w(A) = \sum_{u \in A} w(u)$ for any $A \in \mathcal{F}$.
+\end{defn}
+
+\noindent Note: We assume that the weight of all elements is positive. If not, we can simply ignore all the items of negative weight initially as it is necessarily disadvantageous to have them in the following problem: \\
+
+\noindent In the maximum-weight matroid basis problem, we are given a weighted matroid, and we are asked for a basis $B$ which maximizes $w(B) = \sum_{u \in B} w(u)$. For the maximizes-weight matroid basis problem, the following greedy algorithm works:
+\begin{framed}
+\begin{alg}[Matroid Greedy Algorithm] \ \\
+\begin{enumerate}
+\item Initialize $A = \emptyset$.
+\item Sort the elements of $U$ by weight.
+\item Repeatedly add to $B$ the maximum-weight point $u \in U$ such that $A \cup \{u\}$ is still independent (i.e. $A \cup \{u\} \in \mathcal{F}$), until no such $u$ exists.
+\item Return $A$.
+\end{enumerate} \label{greedy-alg}
+\end{alg}
+\end{framed}
+
+\noindent Let's prove the correctness of the remarkably simple matroid greedy algorithm.
+
+\begin{lem}[Greedy choice property]
+Suppose that $M = (U, \mathcal{F})$ is a weighted matrioid with weight function $w: \UU \rightarrow \RR$ and that $U$ is sorted into monotonically decreasing order by weight. Let $x$ be the first element of $U$ such that $\{x\} \in \mathcal{F}$ (i.e. independent), if any such $x$ exists. If it does, then there exists an optimal subset $A$ of $U$ containing $x$. \label{greedy-choice-property}
+\end{lem}
+
+\proof If no such $x$ exists, then the only independent subset is the empty set (i.e. $\mathcal{F} = \{\emptyset\}$) and the lemma is trivial. Assume then that $\mathcal{F}$ contains some non-empty optimal subset $B$. There are two cases: $x \in B$ or $x \notin B$. In the first, taking $A = B$ proves the lemma. So assume $x \notin B$. \\
+
+\noindent Assume there exists $y \in B$ such that $w(y) > w(x)$. As $y \in B$ and $B \in \mathcal{F}$ then $\{y\} \in \mathcal{F}$. If $w(y) > w(x)$, then $y$ would be the first element of $U$, contradicting the construction. Therefore, by construction, $\forall \ y \in B$, $w(x) \geq w(y)$. \\
+
+\noindent We now construct a set $A \in \mathcal{F}$ such that $x \in A$,$\abs{A} = \abs{B}$, and $w(A) \geq w(B)$. Applying the exchange axiom, we find an element of $B$ to add to $A$ while still preserving independence. We can repeat this property until $\abs{A} = \abs{B}$. Then, by construction $A = B - \{y\} \cup \{x\}$ for some $y \in B$. Then as $w(y) \leq w(x)$,
+\begin{equation}
+\begin{aligned}
+w(A) &= w(B) - w(y) + w(x) \geq w(B)
+\end{aligned}
+\end{equation}
+\noindent As $B$ is optimal, then $A$ containing $x$ is also optimal. \qed
+
+\begin{lem}
+If $M = (U, \mathcal{F})$ is a matroid and $x$ is an element of $U$ such that there exists a set $A$ with $A \cup \{x\} \in \mathcal{F}$, then $\{x\} \in \mathcal{F}$. \label{greedy-passover}
+\end{lem}
+
+\proof This is trivial by the hereditary axiom as $\{x\} \subseteq A \cup \{x\}$. \qed
+
+\begin{lem}[Optimal-substructure property]
+Let $x$ be the first element of $U$ chosen by the greedy algorithm above for weighted matroid $M = (U, \mathcal{F})$. The remaining problem of finding a maximum-weight independent subset containing $x$ reduces to finding a maximum-weight independent subset on the following matroid $M' = (U', \mathcal{F}')$ with weight function $w'$ defined as:
+\begin{equation}
+U' = \{y \in U \ \vert \ \{x, y\} \in \mathcal{F} \}, \qquad \mathcal{F}' = \{B \subseteq U - \{x\} \ \vert B \cup \{x\} \in \mathcal{F}\}, \qquad w' = w \vert_{U'}
+\end{equation} \label{greedy-substructure}
+$M'$ is called the contraction of $M$.
+\end{lem}
+
+\proof If $A$ is an optimal independent subset of $M$ containing $x$, then $A' = A - \{x\}$ is an independent set of $M'$. Conversely, if $A'$ is an independent subset of $M$, then $A = A \cup \{x\}$ is an independent set of $M$. In both cases $w(A) = w(A') + w(x)$, so a maximal solution of one yields a maximal solution of the other. \qed
+
+\begin{thm}[Correctness of the greedy matroid algorithm]
+The greedy algorithm presented in Algorithm \ref{greedy-alg} generates an optimal subset.
+\end{thm}
+
+\proof By the contrapositive of Lemma \ref{greedy-passover}, if we passover choosing some element $x$, we will not need to reconsider it. This proves that our linear search through the sorted elements of $U$ is sufficient; we don't need to loop over elements a second time. When the algorithm selects an initial element $x$, Lemma \ref{greedy-choice-property} guarantees that there is some optimal independent set containing $x$. Finally, Lemma \ref{greedy-substructure} demonstrates that we can reduce to finding an optimal independent set on the contraction of $M$ is sufficient. Its easy to see that Algorithm \ref{greedy-alg} does precisely this, completing the proof. \qed \\
+
+\noindent Even though that was a long proof for such a simple statement, it has given us an incredible ability to demonstrate the correctness of a greedy algorithm. All we have to do is express a problem in the matroid formulation and presto! we have an optimal algorithm for it. \\
+
+\begin{framed}
+\begin{thm}[Runtime of the Greedy Matroid Algorithm]
+The runtime of Algorithm \ref{greedy-alg} is $O(n \log n + n f(n))$ where $f(m)$ is the time it takes to check if $A \cup \{x\} \in \mathcal{F}$ is independent given $A \in \mathcal{F}$ with $\abs{A} = m$.
+\end{thm}
+\end{framed}
+
+\proof The sorting takes $O(n \log n)$ time\footnote{Note that this assumes that calculating the weight of any element $x$ is $O(1)$. In reality, this time should also be taken into account.} followed by seeing if the addition of every element of $U$ to the being built optimal independent set maintains independence. This takes an addition $O(n f(n))$ time, proving the runtime. \qed
+
+\subsection{Kruskal's Algorithm}
+
+We introduced Kruskal's Algorithm already as Algorithm \ref{kruskal-alg} but we never proved its correctness or argued its runtime. We can prove the algorithms correctness by phrasing the algorithm as a matroid. In this case the universe $U = E$ and $\mathcal{F} =$ the set of all forests in $G$. Convince yourself that $(U, \mathcal{F})$ is indeed a matroid. \\
+
+\noindent Correctness then followed as an immediate consequence of formulation as a matroid and furthermore we got an initial bound on the runtime. The time $f(m)$ it takes to check if adding an edge to a pre-existing forest generates a new forest is naively $O(m)$ if we keep track of the vertices in each tree of the forest. Then if we are edge an edge $(v_1, v_2)$ we only need to check if $v_2$ is in the tree that $v_1$ is. If it isn't, then we can add the edge and we adjust our records accordingly to indicate that the two trees were merged. Therefore, the total runtime is dominated by the $O(n f(n)) = O(n^2)$ term, so the runtime is $O(n^2)$. However, we can do better by using a different data structure to keep track of the forest so far. \\
+
+\noindent 
+
+\subsection{Metric Steiner Tree Problem}
+
+\subsection{Huffman Codes}
+
+\subsection{Prim's Algorithm}
+
+\subsection{Clustering and Packing}
+
+\subsection{Additional Example: Roadtrip}\footnote{Written by Celia Zhang.}
+
+\subsection{Additional Example: Coin Changing}\footnote{Written by Celia Zhang.}
+
+\subsection{Additional Caching: Offline Caching}\footnote{Written by Celia Zhang.}
+
+
+\end{document}
